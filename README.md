@@ -13,8 +13,7 @@ Video Generation (Untested),
 Audio Generation
 
 # Store Links:
-Microsoft Store: Coming Soon!
-Google Play: Coming Soon!
+Microsoft Store: Coming Soon!  || Google Play: Coming Soon!
 
 # Build:
 Copy the "LocalAiAssistant.csproj" file into the "LocalAiAssistant" folder.
