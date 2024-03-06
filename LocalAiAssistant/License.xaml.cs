@@ -9,12 +9,15 @@ public partial class License : ContentPage
         {
             Spans =
             {
+#if DEBUG
+
                 new Span
                 {
                     Text = "##### DEBUG MODE #####\n\n",
                     TextColor = Colors.Red
                 },
-                new Span
+#endif
+				new Span
                 {
                     Text = LicenseIncludesText,
                     TextColor = Colors.WhiteSmoke
