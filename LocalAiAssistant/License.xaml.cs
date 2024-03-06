@@ -8,78 +8,61 @@ public partial class License : ContentPage
         LicenseLabel.FormattedText = new FormattedString
         {
             Spans =
-                {
-                    new Span
-                    {
-                        Text = LicenseIncludesText,
-                        TextColor = Colors.WhiteSmoke
-                    },
-                    new Span
-                    {
-                        Text = apacheSeparatorText,
-                        TextColor = Colors.Red
-                    },
-                    new Span
-                    {
-                        Text = apacheLicenseText,
-                        TextColor = Colors.WhiteSmoke
-                    },
+            {
                 new Span
-                    {
-                        Text = mitSeparatorText,
-                        TextColor = Colors.Red
-                    },
-                    new Span
-                    {
-                        Text = mitLicenseText,
-                        TextColor = Colors.WhiteSmoke
-                    },
-                }
-        };
-#if DEBUG
-        LicenseLabel.FormattedText = new FormattedString
-        {
-            Spans =
                 {
-                    new Span
-                    {
-                        Text = "##### DEBUG MODE #####\n\n",
-                        TextColor = Colors.Red
-                    },
-                    new Span
-                    {
-                        Text = LicenseIncludesText,
-                        TextColor = Colors.WhiteSmoke
-                    },
-                    new Span
-                    {
-                        Text = apacheSeparatorText,
-                        TextColor = Colors.Red
-                    },
-                    new Span
-                    {
-                        Text = apacheLicenseText,
-                        TextColor = Colors.WhiteSmoke
-                    },
+                    Text = "##### DEBUG MODE #####\n\n",
+                    TextColor = Colors.Red
+                },
+                new Span
+                {
+                    Text = LicenseIncludesText,
+                    TextColor = Colors.WhiteSmoke
+                },
+                new Span
+                {
+                    Text = apacheSeparatorText,
+                    TextColor = Colors.Red
+                },
+                new Span
+                {
+                    Text = apacheLicenseText,
+                    TextColor = Colors.WhiteSmoke
+                },
 				new Span
-                    {
-                        Text = mitSeparatorText,
-                        TextColor = Colors.Red
-                    },
-                    new Span
-                    {
-                        Text = mitLicenseText,
-                        TextColor = Colors.WhiteSmoke
-                    },
-                }
+                {
+                    Text = mitSeparatorText,
+                    TextColor = Colors.Red
+                },
+                new Span
+                {
+                    Text = mitLicenseText,
+                    TextColor = Colors.WhiteSmoke
+                },
+            }
         };
-#endif
     }
 	private readonly string LicenseIncludesText = @"
 The software that you are using includes several open-source libraries which are licensed under various open-source licenses.
 
-[Put Libraries HERE] licensed under the MIT license.
-[Put Libraries HERE] licensed under the Apache 2.0 license.";
+
+Libraries licensed under the MIT license:
+Copyright (c) CommunityToolkit.Maui (2023, .NET Foundation and Contributors)
+Copyright (c) CommunityToolkit.Maui.MediaElement (2023, .NET Foundation and Contributors)
+Copyright (c) CommunityToolkit.Mvvm (2023, .NET Foundation and Contributors)
+Copyright (c) Microsoft.Maui (2024, Microsoft Corporation)
+Copyright (c) Microsoft.Maui.Controls (2024, Microsoft Corporation)
+Copyright (c) Microsoft.Maui.Controls.Compatibility (2024, Microsoft Corporation)
+Copyright (c) Microsoft.Extensions.Logging.Debug (2023, Microsoft Corporation)
+Copyright (c) System.Drawing.Common (2024, Microsoft Corporation)
+Copyright (c) System.Data.SqlClient (2024, Microsoft Corporation)
+Copyright (c) System.Text.Json (2024, Microsoft Corporation)
+
+Libraries licensed under the Apache 2.0 license:
+Copyright (c) Tesseract (2022, Charles Weld) 
+Copyright (c) Tesseract.Drawing (2022, Charles Weld)
+
+";
 
     private readonly string apacheSeparatorText = "\n\n--------------------------------------------------------Apache License--------------------------------------------------------\n\n";
     private readonly string apacheLicenseText =

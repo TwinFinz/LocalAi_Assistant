@@ -13,7 +13,6 @@
             HorizontalTextAlignment="Start"
             Padding="30,0"
             Style="{StaticResource LicenseTextStyle}"
-            Text="{StaticResource LicenseText}"
             TextColor="LightGray"
             HorizontalOptions="Center"
             x:Name="LicenseLabel" />
