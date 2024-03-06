@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="LocalAiAssistant.StableDiffusionImg2Img"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:DataType="local:ImageGenerationSettingsData"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+    <!--  Image2ImageContent  -->
+    <ScrollView 
+        x:Name="MainView"
+        VerticalScrollBarVisibility="Always"
+        HorizontalScrollBarVisibility="Always">
+        <Grid
+        x:Name="RootLayout"
+        BackgroundColor="#171717"
+        HorizontalOptions="Fill"
+        VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <StackLayout
+                x:Name="ImageOutput"
+                Grid.Row="0"
+                Grid.Column="0"
+                Orientation="Vertical"
+                IsVisible="false">
+                <Image
+                    x:Name="ImageOutputView"
+                    Margin="5,3,5,0"
+                    Aspect="AspectFit"
+                    MaximumHeightRequest="2048"
+                    MaximumWidthRequest="2048" 
+                    MinimumHeightRequest="128"
+                    MinimumWidthRequest="128"
+                    Source="{Binding ImageViewSource}"/>
+                <!--  Save Button  -->
+                <Button
+                    x:Name="SaveImageBtn"
+                    Clicked="OnSaveImageBtnClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    Text="Save Image" />
+            </StackLayout>
+            <!--  Setting Panel  -->
+            <StackLayout
+                x:Name="SettingsPanel"
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="0,0,5,0">
+                <ScrollView 
+                    VerticalScrollBarVisibility="Always"
+                    HorizontalScrollBarVisibility="Always">
+                    <!--  Setting Items  -->
+                    <StackLayout>
+                        <!--  Prompt Input  -->
+                        <Label
+                            Text="Prompt" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Entry
+                            x:Name="PromptInputBox"
+                            Style="{StaticResource DefaultInputBox}"
+                            SemanticProperties.Hint="User input box for server url"
+                            Text="{Binding Prompt, Mode=TwoWay}"
+                            VerticalOptions="Start" />
+                        <!--  Negative Prompt Input  -->
+                        <Label
+                            Text="Negative Prompt" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Entry
+                            x:Name="NegativePromptInputBox"
+                            Style="{StaticResource DefaultInputBox}"
+                            SemanticProperties.Hint="User input box for server url"
+                            Text="{Binding NegativePrompt, Mode=TwoWay}"
+                            VerticalOptions="Start" />
+                        <!--  Seed Input  -->
+                        <Label
+                            Text="Seed Input" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Entry
+                            x:Name="SeedInputBox"
+                            Style="{StaticResource DefaultInputBox}"
+                            SemanticProperties.Hint="User input box for server url"
+                            Text="{Binding Seed}"
+                            VerticalOptions="Start" />
+                        <!--  Sampling Steps Slider  -->
+                        <Label
+                            Style="{StaticResource DefaultLabel}"
+                            Text="{Binding SamplingSteps, StringFormat='Sampling Steps: {0}'}" />
+                        <Slider
+                            x:Name="SamplingStepsSlider"
+                            Margin="10, 0, 15, 0"
+                            Maximum="150"
+                            Minimum="1"
+                            Value="{Binding SamplingSteps, Mode=TwoWay}" />
+                        <!--  CFG Scale Slider  -->
+                        <Label
+                            Style="{StaticResource DefaultLabel}"
+                            Text="{Binding CFGScale, StringFormat='CFG Scale: {0}'}" />
+                        <Slider
+                            x:Name="CFGScaleSlider"
+                            Margin="10, 0, 15, 0"
+                            Maximum="30"
+                            Minimum="1"
+                            Value="{Binding CFGScale, Mode=TwoWay}" />
+
+                        <!--  Image Height Slider  -->
+                        <Label
+                            Style="{StaticResource DefaultLabel}"
+                            Text="{Binding ImageHeight, StringFormat='Image Height: {0}'}" />
+                        <Slider
+                            x:Name="ImageHeightSlider"
+                            Margin="10, 0, 15, 0"
+                            Maximum="2048"
+                            Minimum="64"
+                            Value="{Binding ImageHeight, Mode=TwoWay}" />
+
+                        <!--  Image Width Slider  -->
+                        <Label
+                            Style="{StaticResource DefaultLabel}"
+                            Text="{Binding ImageWidth, StringFormat='Image Width: {0}'}" />
+                        <Slider
+                            x:Name="ImageWidthSlider"
+                            Margin="10, 0, 15, 0"
+                            Maximum="2048"
+                            Minimum="64"
+                            Value="{Binding ImageWidth, Mode=TwoWay}" />
+                        <!--  Automatic1111 Specific Option Switches  -->
+                        <HorizontalStackLayout
+                            x:Name="Automatic1111Switches"
+                            IsVisible="false">
+                            <!--  Restore Faces Switch  -->
+                            <Label
+                                Text="Restore Faces"
+                                Style="{StaticResource DefaultLabel}" />
+                            <Switch x:Name="RestoreFacesSwitch" IsToggled="{Binding RestoreFacesEnabled, Mode=TwoWay}" />
+                            <!--  Tiling Switch  -->
+                            <Label
+                                Text="Tiling"
+                                Style="{StaticResource DefaultLabel}" />
+                            <Switch x:Name="TilingSwitch" IsToggled="{Binding TilingEnabled, Mode=TwoWay}" />
+                            <!--  HiRes Fix Switch  -->
+                            <Label
+                                Margin="5,5,5,5"
+                                FontSize="Caption"
+                                HorizontalTextAlignment="Start"
+                                Text="HiRes Fix"
+                                VerticalOptions="Center" />
+                            <Switch x:Name="HiResFixSwitch" IsToggled="{Binding HiResFixEnabled, Mode=TwoWay}" />
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center">
+                            <!--  Select Button  -->
+                            <Button
+                                x:Name="SelectBtn"
+                                Style="{StaticResource ButtonStyle}"
+                                Clicked="OnSelectBtnClicked"
+                                Text="Select Image"/>
+                            <!--  Generate Button  -->
+                            <Button
+                                x:Name="GenerateBtn"
+                                Style="{StaticResource ButtonStyle}"
+                                Clicked="OnGenerateBtnClicked"
+                                Text="Generate" />
+                        </HorizontalStackLayout>
+                    </StackLayout>
+                </ScrollView>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

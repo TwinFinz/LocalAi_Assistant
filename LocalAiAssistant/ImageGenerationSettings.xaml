@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LocalAiAssistant.ImageGenerationSettings"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:DataType="local:ImageGenerationSettingsData"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+    <ScrollView 
+        x:Name="MainView"
+        VerticalScrollBarVisibility="Always"
+        HorizontalScrollBarVisibility="Always">
+        <Grid
+            x:Name="RootLayout"
+            BackgroundColor="#171717"
+            HorizontalOptions="Fill"
+            VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <ScrollView
+                HorizontalOptions="FillAndExpand">
+                <!--  Setting Items  -->
+                <StackLayout>
+                    <Picker
+                        Title="Select Server Mode"
+                        HorizontalOptions="FillAndExpand"
+                        Margin="10, 0, 0, 0"
+                        SelectedItem="{Binding ServerMode, Mode=TwoWay}"
+                        ItemsSource="{Binding ServerModeNames, Mode=TwoWay}" 
+                        SelectedIndex="{Binding SelectedServerModeIndex, Mode=TwoWay}"/>
+
+                    <Label
+                        FontSize="Caption"
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center"
+                        Text="Server URL" />
+                    <Entry
+                        x:Name="ServerUrlInputBox"
+                        Style="{StaticResource DefaultInputBox}"
+                        SemanticProperties.Hint="User input box for server url"
+                        Text="{Binding ServerUrlInput, Mode=TwoWay}"
+                        HorizontalOptions="FillAndExpand"/>
+
+                    <!--  API Key Input  -->
+                    <Label 
+                        Text="API Key"
+                        Style="{StaticResource DefaultLabel}" />
+                    <Entry
+                        x:Name="ApiKeyInput"
+                        Style="{StaticResource DefaultInputBox}"
+                        SemanticProperties.Hint="User input box for API key"
+                        Text="{Binding ApiKey, Mode=TwoWay}"
+                        HorizontalOptions="FillAndExpand" />
+
+                    <HorizontalStackLayout
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center">
+                        <!-- Enable Auth Switch  -->
+                        <Label
+                            Text="Enable Auth" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
+
+                    </HorizontalStackLayout>
+                    <StackLayout
+                        x:Name="ModelPickers"
+                        Orientation="Horizontal"
+                        HorizontalOptions="CenterAndExpand">
+                        <!-- Text2Image Picker -->
+                        <Picker
+                            x:Name="txt2imgModelPicker"
+                            Margin="8"
+                            BackgroundColor="#383838"
+                            Title="Select Txt2Img Model"
+                            ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                            SelectedIndex="{Binding SelectedTxt2ImgModelIndex, Mode=TwoWay}"
+                            MinimumWidthRequest="300"/>
+
+                        <!-- Image2Image Picker -->
+                        <Picker
+                            x:Name="img2imgModelPicker"
+                            Margin="8"
+                            BackgroundColor="#383838"
+                            Title="Select Img2Img Model"
+                            HorizontalTextAlignment="Center"
+                            ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                            SelectedIndex="{Binding SelectedImg2ImgModelIndex, Mode=TwoWay}"
+                            MinimumWidthRequest="300"/>
+
+                        <!-- Text2Video Picker -->
+                        <Picker
+                            x:Name="Txt2videoModelPicker"
+                            Margin="8"
+                            BackgroundColor="#383838"
+                            Title="Select Txt2Video Model"
+                            HorizontalTextAlignment="Center"
+                            ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                            SelectedIndex="{Binding SelectedTxt2VideoModelIndex, Mode=TwoWay}"
+                            MinimumWidthRequest="300"/>
+
+                        <!-- Image2Video Picker -->
+                        <Picker
+                            x:Name="Img2videoModelPicker"
+                            Margin="8"
+                            BackgroundColor="#383838"
+                            Title="Select Img2Video Model"
+                            HorizontalTextAlignment="Center"
+                            ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                            SelectedIndex="{Binding SelectedImg2VideoModelIndex, Mode=TwoWay}"
+                            MinimumWidthRequest="300"/>
+                    </StackLayout>
+                    <!-- Reload Button -->
+                    <Button
+                        x:Name="ReloadListBtn"
+                        Style="{StaticResource ButtonStyle}"
+                        Clicked="OnReloadListBtnClicked"
+                        Text="Reload" />
+
+                    <!--  Seed Input  -->
+                    <Label
+                        Text="Seed Input"
+                        Style="{StaticResource DefaultLabel}" />
+                    <Entry
+                        x:Name="SeedInputBox"
+                        Style="{StaticResource DefaultInputBox}"
+                        SemanticProperties.Hint="User input box for server url"
+                        Text="{Binding Seed}"
+                        VerticalOptions="Start" />
+
+                    <!-- TimeOut Delay Slider  -->
+                    <Label
+                        Style="{StaticResource DefaultLabel}"
+                        Text="{Binding TimeOutDelay, StringFormat='TimeOut: {0}'}" />
+                    <Slider
+                        x:Name="TimeOutDelaySlider"
+                        Margin="10, 0, 15, 0"
+                        Maximum="600"
+                        Minimum="10"
+                        ValueChanged="TimeOutDelaySliderChanged"
+                        Value="{Binding TimeOutDelay, Mode=TwoWay}" />
+
+                    <!--  Sampling Steps Slider  -->
+                    <Label
+                        FontSize="Caption"
+                        Style="{StaticResource DefaultLabel}"
+                        Text="{Binding SamplingSteps, StringFormat='Sampling Steps: {0}'}" />
+                    <Slider
+                        x:Name="SamplingStepsSlider"
+                        Margin="10, 0, 15, 0"
+                        Maximum="150"
+                        Minimum="1"
+                        Value="{Binding SamplingSteps, Mode=TwoWay}" />
+
+                    <!--  CFG Scale Slider  -->
+                    <Label
+                        Style="{StaticResource DefaultLabel}"
+                        Text="{Binding CFGScale, StringFormat='CFG Scale: {0}'}" />
+                    <Slider
+                        x:Name="CFGScaleSlider"
+                        Margin="10, 0, 15, 0"
+                        Maximum="30"
+                        Minimum="1"
+                        Value="{Binding CFGScale, Mode=TwoWay}" />
+
+                    <!--  Image Height Slider  -->
+                    <Label
+                        Style="{StaticResource DefaultLabel}"
+                        Text="{Binding ImageHeight, StringFormat='Image Height: {0}'}" />
+                    <Slider
+                        x:Name="ImageHeightSlider"
+                        Margin="10, 0, 15, 0"
+                        Maximum="2048"
+                        Minimum="64"
+                        Value="{Binding ImageHeight, Mode=TwoWay}" />
+
+                    <!--  Image Width Slider  -->
+                    <Label
+                        Style="{StaticResource DefaultLabel}"
+                        Text="{Binding ImageWidth, StringFormat='Image Width: {0}'}" />
+                    <Slider
+                        x:Name="ImageWidthSlider"
+                        Margin="10, 0, 15, 0"
+                        Maximum="2048"
+                        Minimum="64"
+                        Value="{Binding ImageWidth, Mode=TwoWay}" />
+
+                    <!--  Batch Count Slider  -->
+                    <Label
+                        Style="{StaticResource DefaultLabel}"
+                        Text="{Binding BatchCount, StringFormat='Batch Count: {0}'}" />
+                    <Slider
+                        x:Name="BatchCountSlider"
+                        Margin="10, 0, 15, 0"
+                        Maximum="150"
+                        Minimum="100"
+                        Value="{Binding BatchCount, Mode=TwoWay}" />
+
+                    <!--  Batch Size Slider  -->
+                    <Label
+                        Style="{StaticResource DefaultLabel}"
+                        Text="{Binding BatchSize, StringFormat='Batch Size: {0}'}" />
+                    <Slider
+                        x:Name="BatchSizeSlider"
+                        Margin="10, 0, 15, 0"
+                        Maximum="8"
+                        Minimum="1"
+                        Value="{Binding BatchSize, Mode=TwoWay}" />
+
+                    <!--  Automatic1111 Specific Option Switches  -->
+                    <HorizontalStackLayout
+                        x:Name="Automatic1111Switches"
+                        HorizontalOptions="Center"
+                        IsVisible="false">
+
+                        <!--  Restore Faces Switch  -->
+                        <Label
+                            Text="Restore Faces" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Switch x:Name="RestoreFacesSwitch" IsToggled="{Binding RestoreFacesEnabled, Mode=TwoWay}" />
+
+                        <!--  Tiling Switch  -->
+                        <Label
+                            Text="Tiling" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Switch x:Name="TilingSwitch" IsToggled="{Binding TilingEnabled, Mode=TwoWay}" />
+
+                        <!--  HiRes Fix Switch  -->
+                        <Label
+                            Style="{StaticResource DefaultLabel}"
+                            Text="HiRes Fix" />
+                        <Switch x:Name="HiResFixSwitch" IsToggled="{Binding HiResFixEnabled, Mode=TwoWay}" />
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout
+                        HorizontalOptions="Center">
+
+                        <!--  Save Button  -->
+                        <Button
+                            x:Name="SaveBtn"
+                            Style="{StaticResource ButtonStyle}"
+                            Clicked="OnSaveBtnClicked"
+                            Text="Save" />
+
+                        <!--  Load Button  -->
+                        <Button
+                            x:Name="LoadBtn"
+                            Style="{StaticResource ButtonStyle}"
+                            Clicked="OnLoadBtnClicked"
+                            Text="Load"/>
+                    </HorizontalStackLayout>
+                </StackLayout>
+            </ScrollView>
+        </Grid>
+    </ScrollView>
+</ContentPage>

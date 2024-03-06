@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LocalAiAssistant.License"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Title="License">
+    <ScrollView
+        Margin="8"
+        VerticalScrollBarVisibility="Always"
+        HorizontalOptions="Fill">
+        <Label
+            HorizontalTextAlignment="Start"
+            Padding="30,0"
+            Style="{StaticResource LicenseTextStyle}"
+            Text="{StaticResource LicenseText}"
+            TextColor="LightGray"
+            HorizontalOptions="Center"
+            x:Name="LicenseLabel" />
+        </ScrollView>
+</ContentPage>

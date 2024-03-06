@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="LocalAiAssistant.GeneralSettings"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:DataType="local:GeneralSettingsData"
+    Title="GeneralSettings">
+
+    <ScrollView
+        Margin="8"
+        HorizontalScrollBarVisibility="Always">
+        <Grid BackgroundColor="#171717">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <VerticalStackLayout
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="8"
+            Grid.ColumnSpan="3">
+                <!--  Encrypt Key Input  -->
+                <Label 
+                    Text="Encrypt Key"
+                        Style="{StaticResource DefaultLabel}"/>
+                <Entry
+                    x:Name="EncryptKeyInput"
+                    Style="{StaticResource DefaultInputBox}"
+                    SemanticProperties.Hint="User input box for Encrypt key"
+                    Text="{Binding EncryptKey, Mode=TwoWay}" />
+                <!--  Switchs  -->
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+
+                    <!--  Encrypt Switch  -->
+                    <Label
+                        Text="Encrypt Save Data"
+                        Style="{StaticResource DefaultLabel}"/>
+                    <Switch x:Name="EncryptSwitch" IsToggled="{Binding EncryptEnabled, Mode=TwoWay}" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <!--  Save Button  -->
+                    <Button
+                    x:Name="SaveBtn"
+                    Style="{StaticResource ButtonStyle}"
+                    Clicked="OnSaveBtnClicked"
+                    Text="Save" />
+                    <!--  Load Button  -->
+                    <Button
+                    x:Name="LoadBtn"
+                    Style="{StaticResource ButtonStyle}"
+                    Clicked="OnLoadBtnClicked"
+                    Text="Load" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

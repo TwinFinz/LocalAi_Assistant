@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="LocalAiAssistant.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    Shell.FlyoutBehavior="Flyout"
+    Title="LocalAiAssistant">
+    
+    <!-- Generations Tabs MAX: 5 -->
+    <FlyoutItem Title="Generations">
+        <ShellContent
+            Title="Info"
+            ContentTemplate="{DataTemplate local:InfoPage}"
+            Route="InfoPage" />
+        <ShellContent
+            Title="Text"
+            ContentTemplate="{DataTemplate local:TextGeneration}"
+            Route="TextGeneration" />
+        <ShellContent
+            Title="Image"
+            ContentTemplate="{DataTemplate local:ImageGeneration}"
+            Route="ImageGeneration" />
+        <ShellContent
+            Title="Video"
+            ContentTemplate="{DataTemplate local:VideoGeneration}"
+            Route="VideoGeneration" />
+        <ShellContent
+            Title="Audio"
+            ContentTemplate="{DataTemplate local:AudioGeneration}"
+            Route="AudioGeneration" />
+    </FlyoutItem>
+
+    <!-- Settings Tabs MAX: 5 -->
+    <FlyoutItem Title="Settings">
+        <ShellContent
+            Title="General"
+            ContentTemplate="{DataTemplate local:GeneralSettings}"
+            Route="GeneralSettings" />
+        <ShellContent
+            Title="Chat Settings"
+            ContentTemplate="{DataTemplate local:TextGenerationSettings}"
+            Route="TextGenerationSettings" />
+        <ShellContent
+            Title="Image Settings"
+            ContentTemplate="{DataTemplate local:ImageGenerationSettings}"
+            Route="ImageGenerationSettings" />
+        <ShellContent
+            Title="TTS Settings"
+            ContentTemplate="{DataTemplate local:AudioGenerationSettings}"
+            Route="AudioGenerationSettings" />
+    </FlyoutItem>
+    <!-- License Page -->
+    <FlyoutItem Title="License">
+        <ShellContent
+            Title="License"
+            ContentTemplate="{DataTemplate local:License}"
+            Route="License" />
+    </FlyoutItem>
+</Shell>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:DataType="local:AudioGenerationSettingsData"
+    x:Class="LocalAiAssistant.AudioGeneration">
+
+    <!--  Image2ImageContent  -->
+    <ScrollView 
+        x:Name="MainView"
+        VerticalScrollBarVisibility="Always"
+        HorizontalScrollBarVisibility="Always">
+        <Grid
+            x:Name="RootLayout"
+            BackgroundColor="#171717"
+            HorizontalOptions="Fill"
+            VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <StackLayout
+                x:Name="MediaOutput"
+                Grid.Row="0"
+                Grid.Column="0"
+                Orientation="Vertical"
+                IsVisible="false">
+                <toolkit:MediaElement
+                    x:Name="MediaPlayer"
+                    Margin="5,3,5,0"
+                    Source="{Binding PlayerMediaSource, Mode=TwoWay}"
+                    ShouldAutoPlay="True"
+                    ShouldShowPlaybackControls="True"
+                    VerticalOptions="Center"
+                    HorizontalOptions="CenterAndExpand"/>
+                <!--  Save Button  -->
+                <Button
+                    x:Name="SaveImageBtn"
+                    Clicked="OnSaveAudioBtnClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    Text="Save Audio" />
+            </StackLayout>
+            <!--  Setting Panel  -->
+            <StackLayout
+                x:Name="SettingsPanel"
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="0,0,5,0">
+                <ScrollView 
+                    VerticalScrollBarVisibility="Always"
+                    HorizontalScrollBarVisibility="Always">
+                    <!--  Setting Items  -->
+                    <StackLayout>
+                        <!--  Prompt Input  -->
+                        <Label
+                            Text="Prompt" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Entry
+                            x:Name="PromptInputBox"
+                            Style="{StaticResource DefaultInputBox}"
+                            SemanticProperties.Hint="User input box for server url"
+                            Text="{Binding Prompt, Mode=TwoWay}"
+                            VerticalOptions="Start" />
+                        <!--  OpenAi Specific Options -->
+                        <StackLayout
+                            x:Name="OpenAiOptionsView"
+                            Orientation="Vertical"
+                            IsVisible="false">
+
+                            <!--  Voice Picker  -->
+                            <Picker
+                                Title="Select Voice"
+                                HorizontalOptions="FillAndExpand"
+                                Margin="10, 0, 0, 0"
+                                ItemsSource="{Binding OpenAiVoiceNames, Mode=TwoWay}" 
+                                SelectedIndex="{Binding SelectedVoiceIndex, Mode=TwoWay}"/>
+
+                            <!--  Speed Slider  -->
+                            <Label
+                                Style="{StaticResource DefaultLabel}"
+                                Text="{Binding Speed, StringFormat='Speed: {0}'}" />
+                            <Slider
+                                x:Name="SpeedSlider"
+                                Margin="10, 0, 15, 0"
+                                Maximum="4.0"
+                                Minimum="0.5"
+                                ValueChanged="SpeedSliderChanged"
+                                Value="{Binding Speed, Mode=TwoWay}" />
+                        </StackLayout>
+                        <HorizontalStackLayout
+                            HorizontalOptions="Center">
+                            <!--  Select Button  -->
+                            <!--<Button
+                                x:Name="SelectBtn"
+                                Style="{StaticResource ButtonStyle}"
+                                Clicked="OnSelectBtnClicked"
+                                Text="Select Sample"/>-->
+                            <!--  Generate Button  -->
+                            <Button
+                                x:Name="GenerateBtn"
+                                Style="{StaticResource ButtonStyle}"
+                                Clicked="OnGenerateBtnClicked"
+                                Text="Generate" />
+                        </HorizontalStackLayout>
+                    </StackLayout>
+                </ScrollView>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

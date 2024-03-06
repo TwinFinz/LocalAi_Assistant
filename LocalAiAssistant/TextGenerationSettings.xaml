@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LocalAiAssistant.TextGenerationSettings"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:DataType="local:TextGenerationSettingsData"
+    Title="Chat Completion Settings">
+
+    <ScrollView
+        Margin="8"
+        HorizontalScrollBarVisibility="Always">
+        <Grid BackgroundColor="#171717">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <VerticalStackLayout
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="8"
+                Grid.ColumnSpan="3">
+                <!--  Server URL Input  -->
+                <Label 
+                    Text="Server Base URL"
+                        Style="{StaticResource DefaultLabel}" />
+                <Entry
+                    x:Name="ServerUrlInput"
+                    Style="{StaticResource DefaultInputBox}"
+                    SemanticProperties.Hint="User input box for server base url"
+                    Text="{Binding ServerUrlInput, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+                
+                <!--  API Key Input  -->
+                <Label 
+                    Text="API Key"
+                    Style="{StaticResource DefaultLabel}"/>
+                <Entry
+                    x:Name="ApiKeyInput"
+                    Style="{StaticResource DefaultInputBox}"
+                    SemanticProperties.Hint="User input box for API key"
+                    Text="{Binding ApiKey, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+    
+                <HorizontalStackLayout
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" >
+                    <!-- Enable Auth Switch  -->
+                    <Label
+                        Text="Enable Auth"
+                        Style="{StaticResource DefaultLabel}" />
+                    <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
+
+                </HorizontalStackLayout>
+
+                <!-- Models Picker -->
+                <Picker
+                    x:Name="LlmModelPicker"
+                    Margin="8"
+                    BackgroundColor="#383838"
+                    Title="Select a LLM Model"
+                    ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                    SelectedIndex="{Binding SelectedModelIndex, Mode=TwoWay}"
+                    HorizontalOptions="Fill"
+                    MinimumWidthRequest="300"/>
+
+                <HorizontalStackLayout
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center" >
+                    <!-- Enable Stream Switch  -->
+                    <Label
+                        Text="Stream Response"
+                        Style="{StaticResource DefaultLabel}" />
+                    <Switch x:Name="StreamSwitch" IsToggled="{Binding Stream, Mode=TwoWay}" />
+
+                    <!-- Enable MultiModal Switch  -->
+                    <Label
+                        Text="MultiModal"
+                        Style="{StaticResource DefaultLabel}" />
+                    <Switch x:Name="MultiModalSwitch" IsToggled="{Binding MultiModal, Mode=TwoWay}" />
+
+                    <!-- Reload Button -->
+                    <Button
+                        x:Name="ReloadListBtn"
+                        Style="{StaticResource ButtonStyle}"
+                        Clicked="OnReloadListBtnClicked"
+                        Text="Reload List" />
+
+                </HorizontalStackLayout>
+
+                <!--  System Prompt Input  -->
+                <Label 
+                     Text="System Prompt"
+                        Style="{StaticResource DefaultLabel}" />
+                <Entry
+                     x:Name="SystemPromptInput"
+                     Style="{StaticResource DefaultInputBox}"
+                     SemanticProperties.Hint="User input box for the System Prompt"
+                     Text="{Binding SystemPromptInput, Mode=TwoWay}"
+                     VerticalOptions="Fill" />
+                <!-- TimeOut Delay Slider  -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding TimeOutDelay, StringFormat='TimeOut: {0}'}" />
+                <Slider
+                    x:Name="TimeOutDelaySlider"
+                    Margin="10, 0, 15, 0"
+                    Maximum="600"
+                    Minimum="10"
+                    ValueChanged="TimeOutDelaySliderChanged"
+                    Value="{Binding TimeOutDelay, Mode=TwoWay}" />
+
+                <!-- MaxTokens Input -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding MaxTokens, StringFormat='Max Tokens: {0}'}" />
+                <Slider
+                    x:Name="MaxTokensSlider"
+                Margin="10, 0, 15, 0"
+                    Maximum="32768"
+                    Minimum="1"
+                    Value="{Binding MaxTokens, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+
+                <!-- Temperature Slider -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding Temperature, StringFormat='Temperature: {0}'}" />
+                <Slider
+                    x:Name="TemperatureSlider"
+                Margin="10, 0, 15, 0"
+                    Maximum="2"
+                    Minimum="0.1"
+                    Value="{Binding Temperature, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+
+                <!-- TopLogprobs Slider -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding TopLogprobs, StringFormat='Top Logprobs: {0}'}" />
+                <Slider
+                    x:Name="TopLogprobsSlider"
+                Margin="10, 0, 15, 0"
+                    Maximum="100"
+                    Minimum="1"
+                    Value="{Binding TopLogprobs, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+
+                <!-- FrequencyPenalty Slider -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding FrequencyPenalty, StringFormat='Frequency Penalty: {0}'}" />
+                <Slider
+                    x:Name="FrequencyPenaltySlider"
+                Margin="10, 0, 15, 0"
+                    Maximum="1"
+                    Minimum="0"
+                    Value="{Binding FrequencyPenalty, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+
+                <!-- PresencePenalty Slider -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding PresencePenalty, StringFormat='Presence Penalty: {0}'}" />
+                <Slider
+                    x:Name="PresencePenaltySlider"
+                Margin="10, 0, 15, 0"
+                    Maximum="1"
+                    Minimum="0"
+                    Value="{Binding PresencePenalty, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+
+                <!-- TopP Slider -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding TopP, StringFormat='TopP: {0}'}" />
+                <Slider
+                    x:Name="TopPSlider"
+                Margin="10, 0, 15, 0"
+                    Maximum="1"
+                    Minimum="0.1"
+                    Value="{Binding TopP, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+
+                <!-- Seed Slider -->
+                <Label
+                        Style="{StaticResource DefaultLabel}"
+                    Text="{Binding Seed, StringFormat='Seed: {0}'}" />
+                <Slider
+                    x:Name="SeedSlider"
+                Margin="10, 0, 15, 0"
+                    Maximum="1000"
+                    Minimum="-1"
+                    Value="{Binding Seed, Mode=TwoWay}"
+                    VerticalOptions="Fill" />
+
+                <!--  Tiling Switch  -->
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <Label
+                        Margin="5,5,5,5"
+                        Text="Speak Response"
+                        FontSize="Caption"
+                        HorizontalTextAlignment="Start"
+                        VerticalOptions="Center" />
+                    <Switch x:Name="TTSSwitch" IsToggled="{Binding TTSEnabled, Mode=TwoWay}" />
+                </HorizontalStackLayout>
+
+                <!-- Stop Words -->
+                <Label 
+                    Text="Stop Words"
+                        Style="{StaticResource DefaultLabel}" />
+                <ListView
+                    x:Name="StopListView"
+                    Margin="8"
+                    BackgroundColor="#202020"
+                    ItemsSource="{Binding Stop}"
+                    VerticalOptions="FillAndExpand">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <HorizontalStackLayout HorizontalOptions="FillAndExpand">
+                                    <Label 
+                                        Text="{Binding}" 
+                                        HorizontalOptions="Fill"
+                                        Style="{StaticResource DefaultLabel}"/>
+                                    <Button 
+                                        Text="Remove" 
+                                        Clicked="OnRemoveStopWordClicked" 
+                                        CommandParameter="{Binding .}" 
+                                        HorizontalOptions="End"
+                                        Style="{StaticResource ButtonStyle}"/>
+                                </HorizontalStackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Entry
+                    x:Name="NewStopWordEntry"
+                    Style="{StaticResource DefaultInputBox}"
+                    Placeholder="Enter new stop word" />
+
+                <Button
+                    Text="Add Stop Word"
+                    Clicked="OnAddStopWordClicked"
+                    Style="{StaticResource ButtonStyle}" />
+                <!--  Buttons  -->
+                <HorizontalStackLayout
+                    HorizontalOptions="Center">
+                    <!--  Generate Button  -->
+                    <Button
+                    x:Name="SaveBtn"
+                    Margin="0,0,10,0"
+                    Style="{StaticResource ButtonStyle}"
+                    Clicked="OnSaveBtnClicked"
+                    Text="Save" />
+                    <!--  Generate Button  -->
+                    <Button
+                    x:Name="LoadBtn"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource ButtonStyle}"
+                    Clicked="OnLoadBtnClicked"
+                    Text="Load" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

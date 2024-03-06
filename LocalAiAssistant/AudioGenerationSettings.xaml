@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LocalAiAssistant.AudioGenerationSettings"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:DataType="local:AudioGenerationSettingsData"
+    Title="AudioGenerationSettings">
+    
+    <ScrollView 
+    VerticalScrollBarVisibility="Always"
+    HorizontalScrollBarVisibility="Always">
+        <!--  Setting Items  -->
+        <StackLayout>
+            <!--  Server Mode Picker  -->
+            <Picker
+                Title="Select Server Mode"
+                HorizontalOptions="FillAndExpand"
+                Margin="10, 0, 0, 0"
+                SelectedItem="{Binding ServerMode, Mode=TwoWay}"
+                ItemsSource="{Binding ServerModeNames, Mode=TwoWay}" 
+                SelectedIndex="{Binding SelectedServerModeIndex, Mode=TwoWay}"/>
+            <!--  Server URL Input  -->
+            <Label
+                FontSize="Caption"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                Text="Server URL" />
+            <Entry
+                x:Name="ServerUrlInputBox"
+                Style="{StaticResource DefaultInputBox}"
+                SemanticProperties.Hint="User input box for server url"
+                Text="{Binding ServerUrlInput, Mode=TwoWay}"
+                HorizontalOptions="FillAndExpand"/>
+            <!--  API Key Input  -->
+            <Label 
+                Text="API Key"
+                Style="{StaticResource DefaultLabel}" />
+            <Entry
+                x:Name="ApiKeyInput"
+                Style="{StaticResource DefaultInputBox}"
+                SemanticProperties.Hint="User input box for API key"
+                Text="{Binding ApiKey, Mode=TwoWay}"
+                HorizontalOptions="FillAndExpand" />
+            <HorizontalStackLayout
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center">
+                <!-- Enable Auth Switch  -->
+                <Label
+                        Text="Enable Auth" 
+                        Style="{StaticResource DefaultLabel}"/>
+                <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
+            </HorizontalStackLayout>
+            <!--  OpenAi Specific Options -->
+            <StackLayout
+              x:Name="OpenAiOptionsView"
+              Orientation="Vertical"
+              IsVisible="false">
+                <!--  Voice Picker  -->
+                <Picker
+                  Title="Select Voice"
+                  HorizontalOptions="FillAndExpand"
+                  Margin="10, 0, 0, 0"
+                  SelectedItem="{Binding SelectedVoice, Mode=TwoWay}"
+                  ItemsSource="{Binding OpenAiVoiceNames, Mode=TwoWay}" 
+                  SelectedIndex="{Binding SelectedVoiceIndex, Mode=TwoWay}"/>
+
+                <!--  Speed Slider  -->
+                <Label
+                  Style="{StaticResource DefaultLabel}"
+                  Text="{Binding Speed, StringFormat='Speed: {0}'}" />
+                <Slider
+                  x:Name="SpeedSlider"
+                  Margin="10, 0, 15, 0"
+                  Maximum="4.0"
+                  Minimum="0.5"
+                  ValueChanged="SpeedSliderChanged"
+                  Value="{Binding Speed, Mode=TwoWay}" />
+            </StackLayout>
+            <!--  Sampling Steps Slider  -->
+            <Label
+                Style="{StaticResource DefaultLabel}"
+                Text="{Binding TimeOutDelay, StringFormat='Timeout: {0}'}" />
+            <Slider
+                x:Name="TimeOutDelaySlider"
+                Margin="10, 0, 15, 0"
+                Maximum="250"
+                Minimum="1"
+                ValueChanged="TimeOutDelaySliderChanged"
+                Value="{Binding TimeOutDelay, Mode=TwoWay}" />
+            <!-- Models Picker -->
+            <Picker
+                x:Name="PrimaryModelPicker"
+                Margin="8"
+                BackgroundColor="#383838"
+                Title="Select a Model"
+                ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                SelectedIndex="{Binding SelectedModelIndex, Mode=TwoWay}"
+                SelectedIndexChanged="OnModelSelected"
+                MinimumWidthRequest="300"
+                HorizontalOptions="FillAndExpand"/>
+            
+            <!-- Secondary Models Picker -->
+            <Picker
+                x:Name="SecondaryModelPicker"
+                Margin="8"
+                BackgroundColor="#383838"
+                Title="Select a Model"
+                ItemsSource="{Binding ModelList2, Mode=TwoWay}"
+                SelectedIndex="{Binding SelectedModelIndex2, Mode=TwoWay}"
+                MinimumWidthRequest="300"
+                IsVisible="False"
+                HorizontalOptions="FillAndExpand"/>
+
+            <!-- Reload Button -->
+            <Button
+                x:Name="ReloadListBtn"
+                Style="{StaticResource ButtonStyle}"
+                Clicked="OnReloadListBtnClicked"
+                Text="Reload" />
+            <HorizontalStackLayout
+                HorizontalOptions="Center">
+
+                <!--  Save Button  -->
+                <Button
+                    x:Name="SaveBtn"
+                    Style="{StaticResource ButtonStyle}"
+                    Clicked="OnSaveBtnClicked"
+                    Text="Save" />
+
+                <!--  Load Button  -->
+                <Button
+                    x:Name="LoadBtn"
+                    Style="{StaticResource ButtonStyle}"
+                    Clicked="OnLoadBtnClicked"
+                    Text="Load"/>
+            </HorizontalStackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

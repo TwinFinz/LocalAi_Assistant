@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <x:String x:Key="HeaderText">Welcome to LocalAi Assistant!</x:String>
+    <x:String x:Key="IntroText">
+        <![CDATA[
+                    Hey there! Welcome to the world of cutting-edge artificial intelligence! 🚀 This app is your guide to the amazing capabilities of LocalAi servers, designed to make your experience seamless and personal. Fancy a chat? Dive into conversations with our super-smart AI chatbot. It's like talking to a friend who always has the perfect response to your questions.
+                    But wait, there's more! The AI behind this app isn't just about chat – it's an artist too. Explore the creative side of the LocalAi server, generating breathtaking and one-of-a-kind images that'll take your imagination to new heights. Whether you're a tech geek or an art enthusiast, this app is the place to be for endless possibilities in artificial intelligence.
+                    Get ready for an exciting journey of innovation and discovery. Let's push the boundaries of what's possible with AI together! 🌟
+                ]]>
+    </x:String>
+</ResourceDictionary>

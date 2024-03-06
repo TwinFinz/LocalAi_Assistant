@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="LocalAiAssistant.TextGeneration"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:DataType="local:TextGenerationSettingsData"
+    Title="Chat Completion">
+
+    <!--  TextGenerations Content  -->
+    <Grid 
+        BackgroundColor="#171717"
+        x:Name="MainGrid"
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ScrollView
+            x:Name="ChatView"
+            Grid.Row="0"
+            Grid.RowSpan="9"
+            Grid.Column="0"
+            Grid.ColumnSpan="4"
+            Margin="8">
+            <StackLayout 
+                x:Name="ChatStackLayout" 
+                VerticalOptions="Fill"
+                Padding="10">
+                <!-- Chat Bubbles will be added here dynamically -->
+            </StackLayout>
+        </ScrollView>
+        <!--  User Input  -->
+        <ScrollView
+            x:Name="UserInputContainer"
+            Margin="5, 0, 0, 10"
+            HorizontalOptions="Fill"
+            HorizontalScrollBarVisibility="Always"
+            Grid.Row="9"
+            Grid.Column="0"
+            Grid.ColumnSpan="4">
+            <Entry
+                x:Name="UserInput"
+                Style="{StaticResource DefaultInputBox}"
+                SemanticProperties.Hint="User input box for sending text to inference"
+                Text="{Binding UserInput}"
+                Completed="OnUserInputCompleted"
+                VerticalOptions="Center" />
+        </ScrollView>
+        <HorizontalStackLayout
+                Margin="0, 0, 0, 10"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                Grid.Row="10"
+                Grid.Column="0"
+                Grid.ColumnSpan="4">
+            <!--  Continue Button  -->
+            <Button
+                x:Name="ContinueBtn"
+                Clicked="OnContinueBtnClicked"
+                Style="{StaticResource ButtonStyle}"
+                SemanticProperties.Hint="Continue inferencing previous inference"
+                IsVisible="False"
+                Text="Continue" />
+            <!--  Cancel Button  -->
+            <Button
+                x:Name="CancelBtn"
+                Clicked="OnCancelBtnClicked"
+                Style="{StaticResource ButtonStyle}"
+                SemanticProperties.Hint="Cancel inferencing"
+                Text="Cancel" />
+            <!--  Retry Button  -->
+            <Button
+                x:Name="RetryBtn"
+                Clicked="OnRetryBtnClicked"
+                Style="{StaticResource ButtonStyle}"
+                SemanticProperties.Hint="Retry inferencing"
+                Text="Retry" />
+            <!--  Select Image Button  -->
+            <Button
+                x:Name="SelectImageBtn"
+                Clicked="OnSelectImageBtnClicked"
+                Style="{StaticResource ButtonStyle}"
+                SemanticProperties.Hint="Select image input for inferencing"
+                Text="Select Image" />
+            <!--  Reset Button  -->
+            <Button
+                x:Name="ResetBtn"
+                Clicked="OnResetClicked"
+                Style="{StaticResource ButtonStyle}"
+                SemanticProperties.Hint="Resets chat history."
+                Text="Reset Chat" />
+            <!--  Send Button  -->
+            <Button
+                x:Name="SendBtn"
+                Clicked="OnSendClicked"
+                Style="{StaticResource ButtonStyle}"
+                SemanticProperties.Hint="Send the user input for inferencing"
+                Text="Send" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>
