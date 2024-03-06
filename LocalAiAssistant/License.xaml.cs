@@ -48,7 +48,6 @@ public partial class License : ContentPage
 	private readonly string LicenseIncludesText = @"
 The software that you are using includes several open-source libraries which are licensed under various open-source licenses.
 
-
 Libraries licensed under the MIT license:
 Copyright (c) CommunityToolkit.Maui (2023, .NET Foundation and Contributors)
 Copyright (c) CommunityToolkit.Maui.MediaElement (2023, .NET Foundation and Contributors)
