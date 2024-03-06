@@ -12,6 +12,10 @@ Image Generation,
 Video Generation (Untested), 
 Audio Generation
 
+# Store Links:
+Microsoft Store: Coming Soon!
+Google Play: Coming Soon!
+
 # Build:
 Copy the "LocalAiAssistant.csproj" file into the "LocalAiAssistant" folder.
 Load the "LocalAiAssistant.sln" using Visual Studio or other compatible software(I used Visual Studio 2022).
