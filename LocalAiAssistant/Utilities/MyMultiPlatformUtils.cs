@@ -23,9 +23,6 @@ using System.Net;
 using CommunityToolkit.Maui.Views;
 using System.Threading;
 
-
-
-
 #if ANDROID
 using Android.Content;
 using Android.Graphics;

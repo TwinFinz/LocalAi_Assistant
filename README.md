@@ -12,7 +12,7 @@ Image Generation,
 Video Generation (Untested), 
 Audio Generation
 
-Build:
+# Build:
 Copy the "LocalAiAssistant.csproj" file into the "LocalAiAssistant" folder.
-load the "LocalAiAssistant.sln" using Visual Studio or other compatible software(I used Visual Studio 2022).
+Load the "LocalAiAssistant.sln" using Visual Studio or other compatible software(I used Visual Studio 2022).
 Build/run.
