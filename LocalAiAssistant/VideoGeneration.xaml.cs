@@ -164,7 +164,7 @@ public partial class VideoGeneration : ContentPage
     private async void OnGenerateBtnClicked(object? sender, EventArgs e)
     {
         SemanticScreenReader.Announce(GenerateBtn.Text);
-        await GenerateImageStableDiffusion();
+        await GenerateVideoStableDiffusion();
     }
     private async void OnSelectBtnClicked(object? sender, EventArgs e)
     {
@@ -180,7 +180,7 @@ public partial class VideoGeneration : ContentPage
             await MyMultiPlatformUtils.MessageBoxWithOK(Application.Current!, "Error", $"Failed to generate image: {ex.Message}");
         }
     }
-    private async Task GenerateImageStableDiffusion()
+    private async Task GenerateVideoStableDiffusion()
     {
         try
         {
@@ -204,9 +204,18 @@ public partial class VideoGeneration : ContentPage
                 case ImageGenerationSettingsData.ServerModes.LocalAi:
                     {
                         // LocalAI Text2Video
-                        //string imageBase64 = Convert.ToBase64String(UiData.InputImage);
+                        string imageBase64 = "";
+                        if (UiData.InputImage != null)
+                        {
+                            imageBase64 = Convert.ToBase64String(UiData.InputImage);
+                            UiData.InputImage = null;
+                            imageUrl = await MyAIAPI.GenerateLocalAiText2VideoAsyncHttp(prompt: $"{UiData.Prompt} | {UiData.NegativePrompt}", image: imageBase64, apiKey: UiData.ApiKey, model: UiData.SelectedImg2VideoModel, size: $"{UiData.ImageWidth}x{UiData.ImageHeight}", timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled);
+                        }
+                        else
+                        {
+                            imageUrl = await MyAIAPI.GenerateLocalAiText2VideoAsyncHttp(prompt: $"{UiData.Prompt} | {UiData.NegativePrompt}", image: imageBase64, apiKey: UiData.ApiKey, model: UiData.SelectedTxt2VideoModel, size: $"{UiData.ImageWidth}x{UiData.ImageHeight}", timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled);
+                        }
                         //string imageUri = $"data:image/jpeg;base64,{imageBase64}";
-                        imageUrl = await MyAIAPI.GenerateLocalAiText2VideoAsyncHttp(prompt: $"{UiData.Prompt} | {UiData.NegativePrompt}", apiKey: UiData.ApiKey, model: UiData.SelectedTxt2VideoModel, size: $"{UiData.ImageWidth}x{UiData.ImageHeight}", timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled);
                         if (!string.IsNullOrWhiteSpace(imageUrl))
                         {
                             curVideoBytes = await MyMultiPlatformUtils.GetAsByteArray(imageUrl);

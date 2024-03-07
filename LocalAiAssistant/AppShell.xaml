@@ -4,57 +4,64 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:LocalAiAssistant"
-    Shell.FlyoutBehavior="Flyout"
+    Shell.FlyoutBehavior="Disabled"
     Title="LocalAiAssistant">
     
     <!-- Generations Tabs MAX: 5 -->
     <FlyoutItem Title="Generations">
-        <ShellContent
+        <Tab Title="Generations">
+            <ShellContent
             Title="Info"
             ContentTemplate="{DataTemplate local:InfoPage}"
             Route="InfoPage" />
-        <ShellContent
+            <ShellContent
             Title="Text"
             ContentTemplate="{DataTemplate local:TextGeneration}"
             Route="TextGeneration" />
-        <ShellContent
+            <ShellContent
             Title="Image"
             ContentTemplate="{DataTemplate local:ImageGeneration}"
             Route="ImageGeneration" />
-        <ShellContent
+            <ShellContent
             Title="Video"
             ContentTemplate="{DataTemplate local:VideoGeneration}"
             Route="VideoGeneration" />
-        <ShellContent
+            <ShellContent
             Title="Audio"
             ContentTemplate="{DataTemplate local:AudioGeneration}"
             Route="AudioGeneration" />
-    </FlyoutItem>
+        </Tab>
 
-    <!-- Settings Tabs MAX: 5 -->
-    <FlyoutItem Title="Settings">
-        <ShellContent
+        <Tab Title="Files">
+            <ShellContent
+                Title="FileManager"
+                ContentTemplate="{DataTemplate local:FileManager}"
+                Route="FileManager" />
+        </Tab>
+
+        <Tab Title="Settings">
+            <ShellContent
             Title="General"
             ContentTemplate="{DataTemplate local:GeneralSettings}"
             Route="GeneralSettings" />
-        <ShellContent
+            <ShellContent
             Title="Chat Settings"
             ContentTemplate="{DataTemplate local:TextGenerationSettings}"
             Route="TextGenerationSettings" />
-        <ShellContent
+            <ShellContent
             Title="Image Settings"
             ContentTemplate="{DataTemplate local:ImageGenerationSettings}"
             Route="ImageGenerationSettings" />
-        <ShellContent
+            <ShellContent
             Title="TTS Settings"
             ContentTemplate="{DataTemplate local:AudioGenerationSettings}"
             Route="AudioGenerationSettings" />
-    </FlyoutItem>
-    <!-- License Page -->
-    <FlyoutItem Title="License">
-        <ShellContent
-            Title="License"
+        </Tab>
+
+        <Tab Title="License">
+            <ShellContent
             ContentTemplate="{DataTemplate local:License}"
             Route="License" />
+        </Tab>
     </FlyoutItem>
 </Shell>

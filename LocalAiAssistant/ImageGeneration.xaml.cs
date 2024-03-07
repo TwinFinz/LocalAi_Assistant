@@ -227,10 +227,11 @@ namespace LocalAiAssistant
                     case ImageGenerationSettingsData.ServerModes.LocalAi:
                         {
                             string imageUrl = string.Empty;
-                            if (UiData.InputImage?.Length > 0)
+                            if (UiData.InputImage != null)
                             {
                                 // Img2Img
                                 string b64Image = Convert.ToBase64String(UiData.InputImage);
+                                UiData.InputImage = null;
                                 imageUrl = await MyAIAPI.GenerateLocalAiImageAsyncHttp(prompt: $"{UiData.Prompt} | {UiData.NegativePrompt}", image: b64Image, size: $"{UiData.ImageWidth}x{UiData.ImageHeight}", model: UiData.SelectedTxt2ImgModel, step: UiData.SamplingSteps, timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, apiKey: UiData.ApiKey, authEnabled: UiData.AuthEnabled);
                             }
                             else
@@ -242,11 +243,13 @@ namespace LocalAiAssistant
                         }
                     case ImageGenerationSettingsData.ServerModes.Automatic1111:
                         {
-                            if (UiData.InputImage?.Length > 0)
+                            if (UiData.InputImage != null)
                             {
+                                string imageBase64 = Convert.ToBase64String(UiData.InputImage);
+                                UiData.InputImage = null;
                                 List<byte[]> imagesGenerated = await MyAIAPI.GenerateImage2ImageStableDiffusionAsync(prompt: UiData.Prompt, negativePrompt: UiData.NegativePrompt, model: UiData.SelectedTxt2ImgModel, samplerName: UiData.SamplingMethod,
                                 steps: UiData.SamplingSteps, batchCount: UiData.BatchCount, batchSize: UiData.BatchSize, seed: UiData.Seed, height: UiData.ImageHeight, width: UiData.ImageWidth, cfgScale: UiData.CFGScale,
-                                inputImage: UiData.InputImage, restoreFaces: UiData.RestoreFacesEnabled, tiling: UiData.TilingEnabled, serverUrl: UiData.ServerUrlInput);
+                                inputImage: imageBase64, restoreFaces: UiData.RestoreFacesEnabled, tiling: UiData.TilingEnabled, serverUrl: UiData.ServerUrlInput);
                                 UiData.CurImageBytes = imagesGenerated.FirstOrDefault();
                             }
                             else
@@ -260,8 +263,10 @@ namespace LocalAiAssistant
                         }
                     case ImageGenerationSettingsData.ServerModes.OpenAi:
                         {
-                            if (UiData.InputImage?.Length > 0)
+                            if (UiData.InputImage != null)
                             {
+                                string imageBase64 = Convert.ToBase64String(UiData.InputImage);
+                                UiData.InputImage = null;
                                 //string imageUrl = await MyAIAPI.EditImageAsyncHttp(prompt: $"{UiData.Prompt}", apiKey: UiData.ApiKey, size: $"{UiData.ImageWidth}x{UiData.ImageHeight}", model: UiData.SelectedTxt2ImgModel, responseFormat: "url", timeoutInSeconds: 30, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled);
                                 //CurImageBytes = await MyMultiPlatformUtils.GetAsByteArray(imageUrl);
                             }

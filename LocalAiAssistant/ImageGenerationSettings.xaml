@@ -33,7 +33,7 @@
                     <Picker
                         Title="Select Server Mode"
                         HorizontalOptions="FillAndExpand"
-                        Margin="10, 0, 0, 0"
+                        Margin="10, 0, 10, 0"
                         SelectedItem="{Binding ServerMode, Mode=TwoWay}"
                         ItemsSource="{Binding ServerModeNames, Mode=TwoWay}" 
                         SelectedIndex="{Binding SelectedServerModeIndex, Mode=TwoWay}"/>
@@ -83,7 +83,7 @@
                             Title="Select Txt2Img Model"
                             ItemsSource="{Binding ModelList, Mode=TwoWay}"
                             SelectedIndex="{Binding SelectedTxt2ImgModelIndex, Mode=TwoWay}"
-                            MinimumWidthRequest="300"/>
+                            MinimumWidthRequest="100"/>
 
                         <!-- Image2Image Picker -->
                         <Picker
@@ -94,7 +94,7 @@
                             HorizontalTextAlignment="Center"
                             ItemsSource="{Binding ModelList, Mode=TwoWay}"
                             SelectedIndex="{Binding SelectedImg2ImgModelIndex, Mode=TwoWay}"
-                            MinimumWidthRequest="300"/>
+                            MinimumWidthRequest="100"/>
 
                         <!-- Text2Video Picker -->
                         <Picker
@@ -105,7 +105,7 @@
                             HorizontalTextAlignment="Center"
                             ItemsSource="{Binding ModelList, Mode=TwoWay}"
                             SelectedIndex="{Binding SelectedTxt2VideoModelIndex, Mode=TwoWay}"
-                            MinimumWidthRequest="300"/>
+                            MinimumWidthRequest="100"/>
 
                         <!-- Image2Video Picker -->
                         <Picker
@@ -116,7 +116,7 @@
                             HorizontalTextAlignment="Center"
                             ItemsSource="{Binding ModelList, Mode=TwoWay}"
                             SelectedIndex="{Binding SelectedImg2VideoModelIndex, Mode=TwoWay}"
-                            MinimumWidthRequest="300"/>
+                            MinimumWidthRequest="100"/>
                     </StackLayout>
                     <!-- Reload Button -->
                     <Button
@@ -200,8 +200,8 @@
                     <Slider
                         x:Name="BatchCountSlider"
                         Margin="10, 0, 15, 0"
-                        Maximum="150"
-                        Minimum="100"
+                        Maximum="100"
+                        Minimum="1"
                         Value="{Binding BatchCount, Mode=TwoWay}" />
 
                     <!--  Batch Size Slider  -->

@@ -151,7 +151,7 @@ namespace LocalAiAssistant
         private List<string> CoquiModels = new List<string>()
         {
             "tts_models/en/vctk/vits",
-            ""
+            "tts_models/en/ljspeech/glow-tts"
         };
         private List<string> PiperModels = new List<string>()
         {

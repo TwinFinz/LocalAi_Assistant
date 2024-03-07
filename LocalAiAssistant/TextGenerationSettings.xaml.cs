@@ -1,4 +1,5 @@
 using LocalAiAssistant.Utilities;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using System.ComponentModel;
 using System.Linq;
@@ -33,12 +34,53 @@ namespace LocalAiAssistant
 #pragma warning restore CS0169 // The field 'Settings.selectedAudioFile' is never used
 #pragma warning restore CS0414 // The field 'TextGenerationSettings.ttsEnabled' is assigned but its value is never used
 
+        DisplayInfo displayInfo = new();
         public TextGenerationSettings()
         {
             InitializeComponent();
             BindingContext = UiData;
             OnLoadBtnClicked(this, new EventArgs());
             ApiKeyInput.Unfocused += ApiKeyInput_Unfocused;
+            this.SizeChanged += OnPageSizeChanged;
+            DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
+        }
+        private async void DeviceDisplay_MainDisplayInfoChanged(object? sender, DisplayInfoChangedEventArgs e)
+        {
+            displayInfo = e.DisplayInfo;
+            MainGrid.MaximumHeightRequest = displayInfo.Height;
+            MainGrid.MaximumWidthRequest = displayInfo.Width;
+            if (displayInfo.Orientation == DisplayOrientation.Portrait)
+            {
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Vertical");
+                switchStack.Orientation = StackOrientation.Vertical;
+#endif
+            }
+            else if (displayInfo.Orientation == DisplayOrientation.Landscape)
+            {
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Horizontal");
+                switchStack.Orientation = StackOrientation.Horizontal;
+#endif
+            }
+        }
+        private async void OnPageSizeChanged(object? sender, EventArgs e)
+        {
+            double aspectRatio = (double)Width / Height;
+            if (aspectRatio > (4.0 / 3.0))
+            {
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"PageSize Set Orientation: Horizontal");
+                switchStack.Orientation = StackOrientation.Horizontal;
+#endif
+            }
+            else
+            {
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"PageSize Set Orientation: Vertical");
+                switchStack.Orientation = StackOrientation.Vertical;
+#endif
+            }
         }
 
         private void ApiKeyInput_Unfocused(object? sender, FocusEventArgs e)

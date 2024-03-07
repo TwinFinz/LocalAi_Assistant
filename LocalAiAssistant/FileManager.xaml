@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage    
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:LocalAiAssistant"
+    x:Class="LocalAiAssistant.FileManager">
+
+    <!--  Image2ImageContent  -->
+    <ScrollView 
+    x:Name="MainView"
+    VerticalScrollBarVisibility="Always"
+    HorizontalScrollBarVisibility="Always">
+        <Grid
+        x:Name="RootLayout"
+        BackgroundColor="#171717"
+        HorizontalOptions="Fill"
+        VerticalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <StackLayout
+            x:Name="FileViewer"
+            Grid.Row="0"
+            Grid.Column="0"
+            Orientation="Vertical"
+            IsVisible="false">
+                <!-- Files Viewer -->
+                <Label
+                    Text="Files"
+                    Style="{StaticResource DefaultLabel}" />
+                <ListView
+                    x:Name="FilesListView"
+                    Margin="8"
+                    BackgroundColor="#202020"
+                    ItemsSource="{Binding Stop}"
+                    VerticalOptions="FillAndExpand">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <HorizontalStackLayout HorizontalOptions="FillAndExpand">
+                                    <Label 
+                        Text="{Binding}" 
+                        HorizontalOptions="Fill"
+                        Style="{StaticResource DefaultLabel}"/>
+                                    <Button 
+                        Text="X" 
+                        Clicked="OnRemoveClicked" 
+                        CommandParameter="{Binding .}" 
+                        HorizontalOptions="End"
+                        Style="{StaticResource RemoveButtonStyle}"/>
+                                </HorizontalStackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            <!--  Function Panel  -->
+            <StackLayout
+            x:Name="FunctionPanel"
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="0,0,5,0">
+                <ScrollView 
+                VerticalScrollBarVisibility="Always"
+                HorizontalScrollBarVisibility="Always">
+                    <!--  Function Items  -->
+                    <StackLayout>
+                        <HorizontalStackLayout
+                        HorizontalOptions="Center">
+                            <!--  Select Button  -->
+                            <Button
+                            x:Name="SelectBtn"
+                            Style="{StaticResource ButtonStyle}"
+                            Clicked="OnSelectBtnClicked"
+                            Text="Select File"/>
+                            <!--  Upload Button  -->
+                            <Button
+                            x:Name="UploadBtn"
+                            Style="{StaticResource ButtonStyle}"
+                            Clicked="OnUploadBtnClicked"
+                            Text="Upload" />
+                        </HorizontalStackLayout>
+                    </StackLayout>
+                </ScrollView>
+            </StackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

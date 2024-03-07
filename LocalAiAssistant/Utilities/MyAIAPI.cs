@@ -137,20 +137,20 @@ namespace LocalAiAssistant
                 throw new JsonException("Stable Diffusion Response was malformed.");
             }
         }
-        public static async Task<List<byte[]>> GenerateImage2ImageStableDiffusionAsync(string prompt, byte[]? inputImage = null, byte[]? maskImage = null, string negativePrompt = "", string model = "deliberate_v3", string samplerName = "DPM++ 2M Karras", int steps = 20, int cfgScale = 12, int seed = -1, int width = 512, int height = 512, int batchSize = 1, int batchCount = 1, bool restoreFaces = false, bool tiling = false, bool overrideSettingsRestoreAfterwards = true, int timeoutInSeconds = 60, string serverUrl = "http://127.0.0.1:7860", string[]? styles = null, int subseed = -1, int subseedStrength = 0, int seedResizeFromH = -1, int seedResizeFromW = -1, double denoisingStrength = 0.75, double sMinUncond = 0, double sChurn = 0, double sTmax = 0, double sTmin = 0, double sNoise = 0, object? overrideSettings = null, int refinerSwitchAt = 0, bool disableExtraNetworks = false, string[]? initImages = null, int resizeMode = 0, int imageCfgScale = 0, int maskBlurX = 4, int maskBlurY = 4, int maskBlur = 0, int inpaintingFill = 0, bool inpaintFullRes = true, int inpaintingFullResPadding = 0, int inpaintingMaskInvert = 0, int initialNoiseMultiplier = 0, string latentMask = "", string samplerIndex = "Euler", bool includeInitImages = false, string scriptName = "", string[]? scriptArgs = null, bool sendImages = true, bool saveImages = false)
+        public static async Task<List<byte[]>> GenerateImage2ImageStableDiffusionAsync(string prompt, string inputImage = "", string maskImage = "", string negativePrompt = "", string model = "deliberate_v3", string samplerName = "DPM++ 2M Karras", int steps = 20, int cfgScale = 12, int seed = -1, int width = 512, int height = 512, int batchSize = 1, int batchCount = 1, bool restoreFaces = false, bool tiling = false, bool overrideSettingsRestoreAfterwards = true, int timeoutInSeconds = 60, string serverUrl = "http://127.0.0.1:7860", string[]? styles = null, int subseed = -1, int subseedStrength = 0, int seedResizeFromH = -1, int seedResizeFromW = -1, double denoisingStrength = 0.75, double sMinUncond = 0, double sChurn = 0, double sTmax = 0, double sTmin = 0, double sNoise = 0, object? overrideSettings = null, int refinerSwitchAt = 0, bool disableExtraNetworks = false, string[]? initImages = null, int resizeMode = 0, int imageCfgScale = 0, int maskBlurX = 4, int maskBlurY = 4, int maskBlur = 0, int inpaintingFill = 0, bool inpaintFullRes = true, int inpaintingFullResPadding = 0, int inpaintingMaskInvert = 0, int initialNoiseMultiplier = 0, string latentMask = "", string samplerIndex = "Euler", bool includeInitImages = false, string scriptName = "", string[]? scriptArgs = null, bool sendImages = true, bool saveImages = false)
         {
             string endpoint = $"{serverUrl}/sdapi/v1/img2img";
             prompt = prompt.Trim();
             string defaultNegativePrompt = negativePrompt.Trim();
             string imageB64 = "";
             string maskB64 = "";
-            if (inputImage != null)
+            if (!string.IsNullOrWhiteSpace(inputImage))
             {
-                imageB64 = Convert.ToBase64String(inputImage);
+                imageB64 = inputImage;
             }
             if (maskImage != null)
             {
-                maskB64 = Convert.ToBase64String(maskImage);
+                maskB64 = maskImage;
             }
             if (!string.IsNullOrEmpty(defaultNegativePrompt))
             {
@@ -671,7 +671,7 @@ namespace LocalAiAssistant
         private static readonly string imageVariationsEndpoint = "/images/variations";
         private static readonly string ModerationsEndpoint = "/moderations";
         private static readonly string imageEditsEndpoint = "/images/edits";
-        private static readonly string fileUploadEndpoint = "/files";
+        private static readonly string filesEndpoint = "/files";
         #endregion
         readonly List<string> exampleTexts = new()
         {
@@ -693,10 +693,9 @@ namespace LocalAiAssistant
         {
             return (float)Math.Sqrt(a.Zip(b, (x, y) => (x - y) * (x - y)).Sum());
         }
-        public static double EstimateTokenCost(string input)
+        public static double EstimateTokenCost(string input, double costPerToken = 0.01)
         {
             double tokenCount = Math.Ceiling((double)input.Length / 4);
-            double costPerToken = 0.01; // Assuming a cost of 0.01 per token
             double cost = tokenCount * costPerToken;
             return cost;
         }
@@ -969,7 +968,7 @@ namespace LocalAiAssistant
             [JsonPropertyName("delta")]
             public DeltaContent Delta { get; set; } = new();
         }
-public class DeltaContent
+        public class DeltaContent
         {
             [JsonPropertyName("content")]
             public string Content { get; set; } = string.Empty;
@@ -1195,165 +1194,7 @@ public class DeltaContent
                 throw new Exception($"{ex.Message}");
             }
         }
-        public static async Task<string> GenerateLocalAiImageAsyncHttp(string prompt, string apiKey = "sk-xxx", string model = "stablediffusionaccelerated", string size = "1024x1024", string image = "", int numOfImages = 1, int step = 20, string quality = "standard", string style = "vivid", int cfgScale = 12, string scheduler = "euler_a", string responseFormat = "url", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
-        {
-            try
-            {
-                prompt = prompt.Trim();
-                LocalAiImageGenerationRequest payload = new()
-                {
-                    Prompt = prompt,
-                    Model = model,
-                    Size = size,
-                    Step = step,
-                    N = numOfImages,
-                    Style = style,
-                    Quality = quality,
-                    SchedulerType = scheduler,
-                    CfgScale = cfgScale,
-                    User = apiKey
-                };
-                if (!string.IsNullOrWhiteSpace(image))
-                {
-                    payload = new LocalAiImg2ImgGenerationRequest()
-                    {
-                        Prompt = prompt,
-                        File = image,
-                        Model = model,
-                        Size = size,
-                        Step = step,
-                        N = numOfImages,
-                        Style = style,
-                        Quality = quality,
-                        SchedulerType = scheduler,
-                        CfgScale = cfgScale,
-                        User = apiKey
-                    };
-                }
-                using HttpClient client = new();
-                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-                if (authEnabled)
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-                }
-                string json = JsonSerializer.Serialize(payload);
-                StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
-#if WINDOWS
-                string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
-#elif ANDROID
-                string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
-#endif
-                client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-                HttpResponseMessage response = await client.PostAsync($"{serverUrl}{imageGenerationEndpoint}", jsonContent);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
-                }
-                string responseJson = await response.Content.ReadAsStringAsync();
-                ImageUrlResponse responseData = JsonSerializer.Deserialize<ImageUrlResponse>(responseJson)!;
-                return responseData.Data.First().Url;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"{ex.Message}");
-            }
-        }
-
-        public static async Task<string> GenerateLocalAiText2VideoAsyncHttp(string prompt, string apiKey = "sk-xxx", string model = "stablediffusionaccelerated", string size = "1024x1024", string image = "", int numOfImages = 1, int step = 20, int cfgScale = 12, string responseFormat = "url", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
-        {
-            try
-            {
-                prompt = prompt.Trim();
-                var payload = new LocalAiText2VideoGenerationRequest
-                {
-                    Prompt = prompt,
-                    Model = model,
-                    Size = size
-                };
-
-                using HttpClient client = new();
-                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-
-                string json = JsonSerializer.Serialize(payload);
-                StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await client.PostAsync($"{serverUrl}{imageGenerationEndpoint}", jsonContent);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
-                }
-                string responseJson = await response.Content.ReadAsStringAsync();
-                ImageUrlResponse responseData = JsonSerializer.Deserialize<ImageUrlResponse>(responseJson)!;
-                return responseData.Data.First().Url;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"{ex.Message}");
-            }
-        }
-        public static async Task<byte[]> GenerateLocalAiTTS(string prompt, string apiKey = "sk-xxx", string backend = "", string model = "cloned-voice", string responseFormat = "bytes", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(prompt))
-                {
-                    throw new Exception($"API request failed: Prompt is Null or EMPTY.");
-                }
-                if (authEnabled && string.IsNullOrWhiteSpace(apiKey))
-                {
-                    throw new Exception($"API request failed: API Key is Null or EMPTY.");
-                }
-                prompt = prompt.Trim();
-
-                TtsRequest payload = new()
-                {
-                    Model = model,
-                    Input = prompt
-                };
-                if (!string.IsNullOrWhiteSpace(backend))
-                {
-                    payload = new TtsRequestFull()
-                    {
-                        Model = model,
-                        Backend = backend,
-                        Input = prompt
-                    };
-                }
-                using HttpClient client = new();
-                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-                if (authEnabled)
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-                }
-                string json = JsonSerializer.Serialize(payload);
-                StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await client.PostAsync($"{serverUrl.Replace("/v1", "")}{AudioGenerationEndpoint}", jsonContent, cancellationToken);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
-                }
-                byte[] responseBytes = await response.Content.ReadAsByteArrayAsync(CancellationToken.None);
-                //UrlResponse responseData = JsonSerializer.Deserialize<ImageUrlResponse>(responseJson)!;
-                return responseBytes;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"{ex.Message}");
-            }
-        }
-        public class TtsRequest
-        {
-            [JsonPropertyName("model")]
-            public string Model { get; set; } = "cloned-voice";
-            [JsonPropertyName("input")]
-            public string Input { get; set; } = string.Empty;
-        }
-        public class TtsRequestFull : TtsRequest
-        {
-            [JsonPropertyName("backend")]
-            public string Backend { get; set; } = "";
-        }
+        
         public static async Task<byte[]> GenerateSpeech(string prompt, string apiKey = "sk-xxx", string voice = "onyx", string model = "tts-1", string responseFormat = "mp3", double speed = 1.0, int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
         {
             try
@@ -1621,49 +1462,75 @@ public class DeltaContent
                 throw new Exception($"{ex.Message}");
             }
         }
-
-        public static async Task<string> UploadFileToOpenAIAsync(byte[] file, string purpose, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        public static async Task<List<string>> GetFilesAsync(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true, CancellationToken cancellationToken = default)
         {
             try
             {
-                string jsonLines = Convert.ToBase64String(file);
-                FileUploadRequest payload = new()
-                {
-                    Purpose = purpose,
-                    File = jsonLines
-                };
-                /*
-                 *  public class FileUploadRequest
-                 *  {
-                 *      [JsonProperty("purpose")]
-                 *      public string Purpose { get; set; }
-                 *      [JsonProperty("file")]
-                 *      public string File { get; set; }
-                 *  } 
-                */
-                // create an HTTP client
-                using HttpClient client = new();
+                using HttpClient client = new HttpClient();
                 client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
                 if (authEnabled)
                 {
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
                 }
-                string json = JsonSerializer.Serialize(payload);
-                StringContent jsonContent = new(json, Encoding.UTF8);
-#if WINDOWS
-                string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
-#elif ANDROID
-                string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
-#endif
-                client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-                HttpResponseMessage response = await client.PostAsync($"{serverUrl}{fileUploadEndpoint}", jsonContent); // fileUploadEndpoint = "https://api.openai.com/v1/files";
+
+                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{filesEndpoint}", cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
                 }
+
+                string responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+                FileListResponse? filesResponse = JsonSerializer.Deserialize<FileListResponse>(responseJson);
+                if (filesResponse == null)
+                {
+                    throw new Exception("Json deserialization failed.");
+                }
+                List<string> filesList = new List<string>();
+                foreach (var file in filesResponse.Data)
+                {
+                    filesList.Add(file.Filename);
+                }
+
+                return filesList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving files: {ex.Message}");
+            }
+        }
+        public static async Task<string> UploadFileAsync(byte[] fileBytes, string purpose, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        {
+            try
+            {
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+
+                if (authEnabled)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                }
+                MultipartFormDataContent formData = new MultipartFormDataContent();
+                formData.Add(new StringContent(purpose), "purpose");
+                formData.Add(new ByteArrayContent(fileBytes), "file", "filename.ext");
+
+                HttpResponseMessage response = await client.PostAsync($"{serverUrl}{filesEndpoint}", formData);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        throw new Exception($"Status code: {(int)response.StatusCode}\n File may already exist");
+                    }
+                    else
+                    {
+                        throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
+                    }
+                }
+
                 string responseJson = await response.Content.ReadAsStringAsync();
                 FileInformation responseData = JsonSerializer.Deserialize<FileInformation>(responseJson)!;
-                return $"{fileUploadEndpoint}/{responseData.Filename}";
+
+                return responseData.Filename;
             }
             catch (Exception ex)
             {
@@ -1687,7 +1554,7 @@ public class DeltaContent
                 string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
 #endif
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{fileUploadEndpoint}/{fileId}");
+                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{filesEndpoint}/{fileId}");
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
@@ -1717,7 +1584,7 @@ public class DeltaContent
                 string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
 #endif
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{fileUploadEndpoint}/{fileId}/content");
+                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{filesEndpoint}/{fileId}/content");
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
@@ -2011,62 +1878,7 @@ public class DeltaContent
             return models ?? new();
         }
 
-        public static async Task<List<LocalAiModel>?> GetLocalAiModelsAsync(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
-        {
-            try
-            {
-                using HttpClient client = new();
-                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-
-                if (authEnabled)
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
-                }
-#if WINDOWS
-                string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
-#elif ANDROID
-                string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
-#endif
-                client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{modelEndpoint}");
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
-                }
-
-                string responseJson = await response.Content.ReadAsStringAsync();
-                JsonSerializerOptions options = JsonOptions;
-                LocalAiModelListResponse? apiResponse = JsonSerializer.Deserialize<LocalAiModelListResponse>(responseJson, options);
-
-                if (apiResponse != null && apiResponse.Data != null)
-                {
-                    return apiResponse.Data;
-                }
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Connection failure: {ex.Message}");
-            }
-        }
-        public static async Task<List<string>> GetLocalAiModelNameList(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
-        {
-            List<LocalAiModel>? result = await GetLocalAiModelsAsync(apiKey, timeoutInSeconds, serverUrl, authEnabled);
-            if (result != null)
-            {
-                List<string> modelNames = result
-                    .Where(model => !model.Id!.EndsWith(".py") && !model.Id.EndsWith(".bin") && !model.Id.EndsWith(".gguf") && !model.Id.EndsWith(".onnx"))
-                    .Select(model => model.Id)
-                    .ToList()!;
-
-                modelNames.Sort(); // Sort the list alphabetically
-                return modelNames;
-            }
-            return new List<string>() { "Not Found!" };
-        }
-
+        
         #region TypeClasses
         public class Message
         {
@@ -2081,7 +1893,7 @@ public class DeltaContent
             public string Model { get; set; } = "gpt-3.5-turbo";
 
             [JsonPropertyName("messages")]
-            public List<Message> Messages { get; set; } = new List<Message>();
+            public List<Message> Messages { get; set; } = new();
 
             [JsonPropertyName("temperature")]
             public double Temperature { get; set; } = 1.0;
@@ -2406,72 +2218,6 @@ public class DeltaContent
                 Size = size;
             }
         }
-        public class LocalAiImageGenerationRequest
-        {
-            [JsonPropertyName("prompt")]
-            public string Prompt { get; set; } = string.Empty;
-
-            [JsonPropertyName("image")]
-            public string Image { get; set; } = string.Empty;
-
-            [JsonPropertyName("n")]
-            public int N { get; set; } = 1;
-
-            [JsonPropertyName("step")]
-            public int Step { get; set; } = 20;
-
-            [JsonPropertyName("size")]
-            public string Size { get; set; } = "1024x1024";
-
-            [JsonPropertyName("quality")]
-            public string Quality { get; set; } = "standard";
-
-            [JsonPropertyName("style")]
-            public string Style { get; set; } = "vivid";
-
-            [JsonPropertyName("model")]
-            public string Model { get; set; } = "stablediffusionaccelerated";
-
-            [JsonPropertyName("scheduler_type")]
-            public string SchedulerType { get; set; } = "euler_a";
-
-            [JsonPropertyName("cfg_scale")]
-            public int CfgScale { get; set; } = 12;
-
-            [JsonPropertyName("user")]
-            public string User { get; set; } = string.Empty;
-        }
-        public class LocalAiImg2ImgGenerationRequest : LocalAiImageGenerationRequest
-        {
-            [JsonPropertyName("file")]
-            public string File { get; set; } = string.Empty;
-        }
-        public class LocalAiText2VideoGenerationRequest
-        {
-            [JsonPropertyName("prompt")]
-            public string Prompt { get; set; } = string.Empty;
-
-            [JsonPropertyName("image")]
-            public string Image { get; set; } = string.Empty;
-
-            [JsonPropertyName("step")]
-            public int Step { get; set; } = 20;
-
-            [JsonPropertyName("size")]
-            public string Size { get; set; } = "1024x1024";
-
-            [JsonPropertyName("model")]
-            public string Model { get; set; } = "stablediffusionaccelerated";
-
-            [JsonPropertyName("scheduler_type")]
-            public string SchedulerType { get; set; } = "euler_a"; // "url"
-
-            [JsonPropertyName("cfg_scale")]
-            public int CfgScale { get; set; } = 12;
-
-            [JsonPropertyName("user")]
-            public string User { get; set; } = string.Empty;
-        }
 
         public class ImageEditRequest
         {
@@ -2564,17 +2310,6 @@ public class DeltaContent
             [JsonPropertyName("b64_json")]
             public string B64Json { get; set; } = string.Empty;
         }
-        public class LocalAiModel
-        {
-            public string? Id { get; set; }
-            public string? Object { get; set; }
-        }
-
-        public class LocalAiModelListResponse
-        {
-            public string? Object { get; set; }
-            public List<LocalAiModel>? Data { get; set; }
-        }
         public class ModelListResponse
         {
             [JsonPropertyName("list")]
@@ -2637,6 +2372,12 @@ public class DeltaContent
             {
                 Stop = "\"\"\"";
             }
+        }
+
+        public class FileListResponse
+        {
+            [JsonPropertyName("data")]
+            public List<FileInformation> Data { get; set; } = new();
         }
         public class FileUploadRequest
         {
@@ -2755,7 +2496,315 @@ public class DeltaContent
             }
         }
         #endregion
-        #endregion        
+        #endregion
+        #region LocalAi
+        public static async Task<string> GenerateLocalAiImageAsyncHttp(string prompt, string apiKey = "sk-xxx", string model = "stablediffusionaccelerated", string size = "1024x1024", string image = "", int numOfImages = 1, int step = 20, string quality = "standard", string style = "vivid", int cfgScale = 12, string scheduler = "euler_a", string responseFormat = "url", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        {
+            try
+            {
+                prompt = prompt.Trim();
+                string json = string.Empty;
+                if (!string.IsNullOrWhiteSpace(image))
+                {
+                    LocalAiImg2ImgGenerationRequest payload = new()
+                    {
+                        Prompt = prompt,
+                        File = image,
+                        Model = model,
+                        Size = size,
+                        Step = step,
+                        N = numOfImages,
+                        Style = style,
+                        Quality = quality,
+                        SchedulerType = scheduler,
+                        CfgScale = cfgScale,
+                        User = apiKey
+                    };
+                    json = JsonSerializer.Serialize(payload);
+                }
+                else
+                {
+                    LocalAiImageGenerationRequest payload = new()
+                    {
+                        Prompt = prompt,
+                        Model = model,
+                        Size = size,
+                        Step = step,
+                        N = numOfImages,
+                        Style = style,
+                        Quality = quality,
+                        SchedulerType = scheduler,
+                        CfgScale = cfgScale,
+                        User = apiKey
+                    };
+                    json = JsonSerializer.Serialize(payload);
+                }
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+                if (authEnabled)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                }
+                StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
+#if WINDOWS
+                string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
+#elif ANDROID
+                string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
+#endif
+                client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+                HttpResponseMessage response = await client.PostAsync($"{serverUrl}{imageGenerationEndpoint}", jsonContent);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
+                }
+                string responseJson = await response.Content.ReadAsStringAsync();
+                ImageUrlResponse responseData = JsonSerializer.Deserialize<ImageUrlResponse>(responseJson)!;
+                return responseData.Data.First().Url;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+        public static async Task<string> GenerateLocalAiText2VideoAsyncHttp(string prompt, string apiKey = "sk-xxx", string model = "stablediffusionaccelerated", string size = "1024x1024", string image = "", int numOfImages = 1, int step = 20, int cfgScale = 12, string responseFormat = "url", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        {
+            try
+            {
+                prompt = prompt.Trim();
+                var payload = new LocalAiText2VideoGenerationRequest
+                {
+                    Prompt = prompt,
+                    Model = model,
+                    File = image,
+                    Size = size
+                };
+
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+                if (authEnabled)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                }
+                string json = JsonSerializer.Serialize(payload);
+                StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync($"{serverUrl}{imageGenerationEndpoint}", jsonContent);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
+                }
+                string responseJson = await response.Content.ReadAsStringAsync();
+                ImageUrlResponse responseData = JsonSerializer.Deserialize<ImageUrlResponse>(responseJson)!;
+                return responseData.Data.First().Url;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+        public static async Task<byte[]> GenerateLocalAiTTS(string prompt, string apiKey = "sk-xxx", string backend = "", string model = "cloned-voice", string responseFormat = "url", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(prompt))
+                {
+                    throw new Exception($"API request failed: Prompt is Null or EMPTY.");
+                }
+                if (authEnabled && string.IsNullOrWhiteSpace(apiKey))
+                {
+                    throw new Exception($"API request failed: API Key is Null or EMPTY.");
+                }
+                prompt = prompt.Trim();
+
+                string json = string.Empty;
+                if (!string.IsNullOrWhiteSpace(backend))
+                {
+                    TtsRequestFull payload = new()
+                    {
+                        Model = model,
+                        Backend = backend,
+                        Input = prompt
+                    };
+                    json = JsonSerializer.Serialize(payload);
+                }
+                else
+                {
+                    TtsRequest payload = new()
+                    {
+                        Model = model,
+                        Input = prompt
+                    };
+                    json = JsonSerializer.Serialize(payload);
+                }
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+                if (authEnabled)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                }
+                StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync($"{serverUrl.Replace("/v1", "")}{AudioGenerationEndpoint}", jsonContent, cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
+                }
+                byte[] responseBytes = await response.Content.ReadAsByteArrayAsync(CancellationToken.None);
+                //UrlResponse responseData = JsonSerializer.Deserialize<ImageUrlResponse>(responseJson)!;
+                return responseBytes;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
+        }
+        public static async Task<List<LocalAiModel>?> GetLocalAiModelsAsync(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        {
+            try
+            {
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+
+                if (authEnabled)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                }
+#if WINDOWS
+                string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
+#elif ANDROID
+                string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
+#endif
+                client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
+                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{modelEndpoint}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
+                }
+
+                string responseJson = await response.Content.ReadAsStringAsync();
+                JsonSerializerOptions options = JsonOptions;
+                LocalAiModelListResponse? apiResponse = JsonSerializer.Deserialize<LocalAiModelListResponse>(responseJson, options);
+
+                if (apiResponse != null && apiResponse.Data != null)
+                {
+                    return apiResponse.Data;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Connection failure: {ex.Message}");
+            }
+        }
+        public static async Task<List<string>> GetLocalAiModelNameList(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        {
+            List<LocalAiModel>? result = await GetLocalAiModelsAsync(apiKey, timeoutInSeconds, serverUrl, authEnabled);
+            if (result != null)
+            {
+                List<string> modelNames = result
+                    .Where(model => !model.Id!.EndsWith(".py") && !model.Id.EndsWith(".bin") && !model.Id.EndsWith(".gguf") && !model.Id.EndsWith(".onnx"))
+                    .Select(model => model.Id)
+                    .ToList()!;
+
+                modelNames.Sort(); // Sort the list alphabetically
+                return modelNames;
+            }
+            return new List<string>() { "Not Found!" };
+        }
+        #region TypeClasses
+        public class TtsRequest
+        {
+            [JsonPropertyName("model")]
+            public string Model { get; set; } = "cloned-voice";
+            [JsonPropertyName("input")]
+            public string Input { get; set; } = string.Empty;
+        }
+        public class TtsRequestFull : TtsRequest
+        {
+            [JsonPropertyName("backend")]
+            public string Backend { get; set; } = string.Empty;
+        }
+        public class LocalAiModel
+        {
+            public string? Id { get; set; }
+            public string? Object { get; set; }
+        }
+
+        public class LocalAiModelListResponse
+        {
+            public string? Object { get; set; }
+            public List<LocalAiModel>? Data { get; set; }
+        }
+        public class LocalAiImageGenerationRequest
+        {
+            [JsonPropertyName("prompt")]
+            public string Prompt { get; set; } = string.Empty;
+
+            [JsonPropertyName("image")]
+            public string Image { get; set; } = string.Empty;
+
+            [JsonPropertyName("n")]
+            public int N { get; set; } = 1;
+
+            [JsonPropertyName("step")]
+            public int Step { get; set; } = 20;
+
+            [JsonPropertyName("size")]
+            public string Size { get; set; } = "1024x1024";
+
+            [JsonPropertyName("quality")]
+            public string Quality { get; set; } = "standard";
+
+            [JsonPropertyName("style")]
+            public string Style { get; set; } = "vivid";
+
+            [JsonPropertyName("model")]
+            public string Model { get; set; } = "stablediffusionaccelerated";
+
+            [JsonPropertyName("scheduler_type")]
+            public string SchedulerType { get; set; } = "euler_a";
+
+            [JsonPropertyName("cfg_scale")]
+            public int CfgScale { get; set; } = 12;
+
+            [JsonPropertyName("user")]
+            public string User { get; set; } = string.Empty;
+        }
+        public class LocalAiImg2ImgGenerationRequest : LocalAiImageGenerationRequest
+        {
+            [JsonPropertyName("file")]
+            public string File { get; set; } = string.Empty;
+        }
+        public class LocalAiText2VideoGenerationRequest
+        {
+            [JsonPropertyName("prompt")]
+            public string Prompt { get; set; } = string.Empty;
+
+            [JsonPropertyName("file")]
+            public string File { get; set; } = string.Empty;
+
+            [JsonPropertyName("step")]
+            public int Step { get; set; } = 20;
+
+            [JsonPropertyName("size")]
+            public string Size { get; set; } = "1024x1024";
+
+            [JsonPropertyName("model")]
+            public string Model { get; set; } = "stablediffusionaccelerated";
+
+            [JsonPropertyName("scheduler_type")]
+            public string SchedulerType { get; set; } = "euler_a"; // "url"
+
+            [JsonPropertyName("cfg_scale")]
+            public int CfgScale { get; set; } = 12;
+
+            [JsonPropertyName("user")]
+            public string User { get; set; } = string.Empty;
+        }
+        #endregion
+        #endregion
     }
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning restore IDE0028 // Simplify collection initialization

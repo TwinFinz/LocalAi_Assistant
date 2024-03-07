@@ -39,12 +39,14 @@ namespace LocalAiAssistant
             {
 #if DEBUG
                 await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Vertical");
+                buttonStack.Orientation = StackOrientation.Vertical;
 #endif
             }
             else if (displayInfo.Orientation == DisplayOrientation.Landscape)
             {
 #if DEBUG
                 await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Horizontal");
+                buttonStack.Orientation = StackOrientation.Horizontal;
 #endif
             }
         }
@@ -109,12 +111,14 @@ namespace LocalAiAssistant
             {
 #if DEBUG
                 await MyMultiPlatformUtils.WriteToLog($"PageSize Set Orientation: Horizontal");
+                buttonStack.Orientation = StackOrientation.Horizontal;
 #endif
             }
             else
             {
 #if DEBUG
                 await MyMultiPlatformUtils.WriteToLog($"PageSize Set Orientation: Vertical");
+                buttonStack.Orientation = StackOrientation.Vertical;
 #endif
             }
         }

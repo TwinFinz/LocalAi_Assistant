@@ -16,6 +16,7 @@ namespace LocalAiAssistant
             ApiKeyInput.Unfocused += ApiKeyInput_Unfocused;
             SizeChanged += OnPageSizeChanged;
             DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
+            OnPageSizeChanged(this, new EventArgs());
         }
 
         private void ApiKeyInput_Unfocused(object? sender, FocusEventArgs e)
@@ -59,17 +60,17 @@ namespace LocalAiAssistant
             double aspectRatio = (double)Width / Height;
             if (aspectRatio > (4.0 / 3.0))
             {
-                ModelPickers.Orientation = StackOrientation.Horizontal;
 #if DEBUG
                 await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Horizontal");
 #endif
+                ModelPickers.Orientation = StackOrientation.Horizontal;
             }
             else
             {
-                ModelPickers.Orientation = StackOrientation.Vertical;
 #if DEBUG
                 await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Vertical");
 #endif
+                ModelPickers.Orientation = StackOrientation.Vertical;
             }
         }
         private async void DeviceDisplay_MainDisplayInfoChanged(object? sender, DisplayInfoChangedEventArgs e)
@@ -208,7 +209,6 @@ namespace LocalAiAssistant
                     {
                         UiData.ServerMode = ImageGenerationSettingsData.ServerModes.OpenAi;
                     }
-
                 }
             }
         }

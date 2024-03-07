@@ -52,7 +52,6 @@ namespace LocalAiAssistant.Utilities
         {
             try
             {
-
                 if (!MainThread.IsMainThread)
                 {
                     await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -215,6 +214,18 @@ namespace LocalAiAssistant.Utilities
             }
             string filePath = result.FullPath;
             return File.ReadAllBytes(filePath);
+        }
+
+        internal static async Task<string?> PickFileAsync()
+        {
+            var result = await FilePicker.PickAsync();
+
+            if (result == null)
+            {
+                // No file was picked
+                return null;
+            }
+            return result.FullPath;
         }
         internal static async Task<byte[]> GetAsByteArray(string url)
         {

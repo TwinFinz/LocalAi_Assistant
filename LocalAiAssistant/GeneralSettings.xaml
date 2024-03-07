@@ -9,7 +9,6 @@
     Title="GeneralSettings">
 
     <ScrollView
-        Margin="8"
         HorizontalScrollBarVisibility="Always">
         <Grid BackgroundColor="#171717">
             <Grid.RowDefinitions>
@@ -35,6 +34,15 @@
             Grid.Column="0"
             Margin="8"
             Grid.ColumnSpan="3">
+                <!--  Default Server Input  -->
+                <Label 
+                    Text="Default Server Url"
+                        Style="{StaticResource DefaultLabel}"/>
+                <Entry
+                    x:Name="DefaultServerUrlInput"
+                    Style="{StaticResource DefaultInputBox}"
+                    SemanticProperties.Hint="User input box for Default Server Url"
+                    Text="{Binding DefaultServerUrl, Mode=TwoWay}" />
                 <!--  Encrypt Key Input  -->
                 <Label 
                     Text="Encrypt Key"

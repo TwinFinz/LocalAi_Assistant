@@ -129,6 +129,9 @@ namespace LocalAiAssistant
         public static readonly BindableProperty EncryptKeyProperty = BindableProperty.Create(nameof(EncryptKey), typeof(string), typeof(GeneralSettingsData), string.Empty);
         public string EncryptKey { get => (string)GetValue(EncryptKeyProperty); set => SetValue(EncryptKeyProperty, value); }
 
+        public static readonly BindableProperty DefaultServerUrlProperty = BindableProperty.Create(nameof(DefaultServerUrl), typeof(string), typeof(GeneralSettingsData), string.Empty);
+        public string DefaultServerUrl { get => (string)GetValue(DefaultServerUrlProperty); set => SetValue(DefaultServerUrlProperty, value); }
+
         /** Example Definitions **/
 
         public static readonly BindableProperty ImageViewSourceProperty = BindableProperty.Create(nameof(ImageViewSource), typeof(ImageSource), typeof(GeneralSettingsData), null);

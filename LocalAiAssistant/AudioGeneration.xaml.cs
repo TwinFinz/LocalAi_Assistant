@@ -138,7 +138,7 @@ public partial class AudioGeneration : ContentPage
         if (curAudioBytes != null)
         {
             string filePath = Path.Combine(FileSystem.CacheDirectory, "temp_audio.mp3");
-            await File.WriteAllBytesAsync(filePath, curAudioBytes); // Asynchronous file write
+            await File.WriteAllBytesAsync(filePath, curAudioBytes, cancellationToken); // Asynchronous file write
             MediaSource source = MediaSource.FromFile(filePath);
             MediaPlayer.Source = source;
             MediaOutput.IsVisible = false;
@@ -172,7 +172,7 @@ public partial class AudioGeneration : ContentPage
                         // LocalAI Text2Audio
                         if (UiData.SelectedModel == "Bark")
                         {
-                            audioBytes = await MyAIAPI.GenerateLocalAiTTS(prompt: textToGenerate, apiKey: UiData.ApiKey, backend: "Bark", model: UiData.SelectedModel2, timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled, cancellationToken: cancellationToken);
+                            audioBytes = await MyAIAPI.GenerateLocalAiTTS(prompt: textToGenerate, apiKey: UiData.ApiKey, backend: "bark", model: UiData.SelectedModel2, timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled, cancellationToken: cancellationToken);
                         }
                         else if (UiData.SelectedModel == "CoquiTTS")
                         {

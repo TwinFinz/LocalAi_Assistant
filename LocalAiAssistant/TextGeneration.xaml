@@ -64,56 +64,62 @@
                 Completed="OnUserInputCompleted"
                 VerticalOptions="Center" />
         </ScrollView>
-        <HorizontalStackLayout
+        <ScrollView
                 Margin="0, 0, 0, 10"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 Grid.Row="10"
                 Grid.Column="0"
                 Grid.ColumnSpan="4">
-            <!--  Continue Button  -->
-            <Button
-                x:Name="ContinueBtn"
-                Clicked="OnContinueBtnClicked"
-                Style="{StaticResource ButtonStyle}"
-                SemanticProperties.Hint="Continue inferencing previous inference"
-                IsVisible="False"
-                Text="Continue" />
-            <!--  Cancel Button  -->
-            <Button
-                x:Name="CancelBtn"
-                Clicked="OnCancelBtnClicked"
-                Style="{StaticResource ButtonStyle}"
-                SemanticProperties.Hint="Cancel inferencing"
-                Text="Cancel" />
-            <!--  Retry Button  -->
-            <Button
-                x:Name="RetryBtn"
-                Clicked="OnRetryBtnClicked"
-                Style="{StaticResource ButtonStyle}"
-                SemanticProperties.Hint="Retry inferencing"
-                Text="Retry" />
-            <!--  Select Image Button  -->
-            <Button
-                x:Name="SelectImageBtn"
-                Clicked="OnSelectImageBtnClicked"
-                Style="{StaticResource ButtonStyle}"
-                SemanticProperties.Hint="Select image input for inferencing"
-                Text="Select Image" />
-            <!--  Reset Button  -->
-            <Button
-                x:Name="ResetBtn"
-                Clicked="OnResetClicked"
-                Style="{StaticResource ButtonStyle}"
-                SemanticProperties.Hint="Resets chat history."
-                Text="Reset Chat" />
-            <!--  Send Button  -->
-            <Button
-                x:Name="SendBtn"
-                Clicked="OnSendClicked"
-                Style="{StaticResource ButtonStyle}"
-                SemanticProperties.Hint="Send the user input for inferencing"
-                Text="Send" />
-        </HorizontalStackLayout>
+            <StackLayout  x:Name="buttonStack" Orientation="Horizontal" HorizontalOptions="Center">
+                <HorizontalStackLayout HorizontalOptions="Center">
+                <!--  Continue Button  -->
+                <Button
+                    x:Name="ContinueBtn"
+                    Clicked="OnContinueBtnClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    SemanticProperties.Hint="Continue inferencing previous inference"
+                    IsVisible="False"
+                    Text="Continue" />
+                <!--  Retry Button  -->
+                <Button
+                    x:Name="RetryBtn"
+                    Clicked="OnRetryBtnClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    SemanticProperties.Hint="Retry inferencing"
+                    Text="Retry" />
+                <!--  Cancel Button  -->
+                <Button
+                    x:Name="CancelBtn"
+                    Clicked="OnCancelBtnClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    SemanticProperties.Hint="Cancel inferencing"
+                    Text="Cancel" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout HorizontalOptions="Center">
+                <!--  Select Image Button  -->
+                <Button
+                    x:Name="SelectImageBtn"
+                    Clicked="OnSelectImageBtnClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    SemanticProperties.Hint="Select image input for inferencing"
+                    Text="Select Image" />
+                <!--  Reset Button  -->
+                <Button
+                    x:Name="ResetBtn"
+                    Clicked="OnResetClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    SemanticProperties.Hint="Resets chat history."
+                    Text="Reset Chat" />
+                <!--  Send Button  -->
+                <Button
+                    x:Name="SendBtn"
+                    Clicked="OnSendClicked"
+                    Style="{StaticResource ButtonStyle}"
+                    SemanticProperties.Hint="Send the user input for inferencing"
+                    Text="Send" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </ScrollView>
     </Grid>
 </ContentPage>

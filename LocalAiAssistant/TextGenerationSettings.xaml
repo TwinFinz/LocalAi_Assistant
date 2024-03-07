@@ -11,7 +11,7 @@
     <ScrollView
         Margin="8"
         HorizontalScrollBarVisibility="Always">
-        <Grid BackgroundColor="#171717">
+        <Grid x:Name="MainGrid" BackgroundColor="#171717">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="auto" />
@@ -69,29 +69,34 @@
                     HorizontalOptions="Fill"
                     MinimumWidthRequest="300"/>
 
-                <HorizontalStackLayout
+                <StackLayout
+                    x:Name="switchStack" 
+                    Orientation="Horizontal"
                     VerticalOptions="Center" 
                     HorizontalOptions="Center" >
-                    <!-- Enable Stream Switch  -->
-                    <Label
-                        Text="Stream Response"
-                        Style="{StaticResource DefaultLabel}" />
-                    <Switch x:Name="StreamSwitch" IsToggled="{Binding Stream, Mode=TwoWay}" />
 
-                    <!-- Enable MultiModal Switch  -->
-                    <Label
-                        Text="MultiModal"
-                        Style="{StaticResource DefaultLabel}" />
-                    <Switch x:Name="MultiModalSwitch" IsToggled="{Binding MultiModal, Mode=TwoWay}" />
+                    <HorizontalStackLayout
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center" >
+                        <!-- Enable Stream Switch  -->
+                        <Label
+                            Text="Stream Response"
+                            Style="{StaticResource DefaultLabel}" />
+                        <Switch x:Name="StreamSwitch" IsToggled="{Binding Stream, Mode=TwoWay}" />
 
+                        <!-- Enable MultiModal Switch  -->
+                        <Label
+                            Text="MultiModal"
+                            Style="{StaticResource DefaultLabel}" />
+                        <Switch x:Name="MultiModalSwitch" IsToggled="{Binding MultiModal, Mode=TwoWay}" />
+                        </HorizontalStackLayout>
                     <!-- Reload Button -->
-                    <Button
+                        <Button
                         x:Name="ReloadListBtn"
                         Style="{StaticResource ButtonStyle}"
                         Clicked="OnReloadListBtnClicked"
                         Text="Reload List" />
-
-                </HorizontalStackLayout>
+                </StackLayout>
 
                 <!--  System Prompt Input  -->
                 <Label 
@@ -230,11 +235,11 @@
                                         HorizontalOptions="Fill"
                                         Style="{StaticResource DefaultLabel}"/>
                                     <Button 
-                                        Text="Remove" 
+                                        Text="X" 
                                         Clicked="OnRemoveStopWordClicked" 
                                         CommandParameter="{Binding .}" 
                                         HorizontalOptions="End"
-                                        Style="{StaticResource ButtonStyle}"/>
+                                        Style="{StaticResource RemoveButtonStyle}"/>
                                 </HorizontalStackLayout>
                             </ViewCell>
                         </DataTemplate>
