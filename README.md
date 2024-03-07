@@ -1,6 +1,6 @@
 # LocalAi-Assistant (WIP)
 
-This is a simplistic UI for a LocalAi server (Also supports OpenAi) built using Maui.
+This is a simplistic UI for a LocalAi (https://github.com/mudler/LocalAI) server (Also supports OpenAi) built using Maui.
 It is very much a WIP, It is never expected to be perfect.
 More features are planned but are yet to be completed.
 This is done in free time so updates may be sparse.
@@ -11,6 +11,9 @@ Text Generation,
 Image Generation, 
 Video Generation (Untested), 
 Audio Generation
+
+# Store Links:
+Microsoft Store: Coming Soon!  || Google Play: Coming Soon!
 
 # Build:
 Copy the "LocalAiAssistant.csproj" file into the "LocalAiAssistant" folder.
