@@ -1568,11 +1568,10 @@ namespace LocalAiAssistant
                 throw new Exception($"{ex.Message}");
             }
         }
-        public static async Task<byte[]> RetrieveFileDetailsAsyncHttp(string fileId, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        public static async Task<MyAIAPI.FileInformation> RetrieveFileDetailsAsyncHttp(string fileId, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
         {
             try
             {
-                // create an HTTP client
                 using HttpClient client = new();
                 client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
                 if (authEnabled)
@@ -1582,7 +1581,7 @@ namespace LocalAiAssistant
 #if WINDOWS
                 string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
 #elif ANDROID
-                string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
+        string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
 #endif
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
                 HttpResponseMessage response = await client.GetAsync($"{serverUrl}{filesEndpoint}/{fileId}");
@@ -1590,19 +1589,19 @@ namespace LocalAiAssistant
                 {
                     throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
                 }
-                byte[] file = JsonSerializer.Deserialize<byte[]>(await response.Content.ReadAsStringAsync())!;
-                return file;
+                string responseJson = await response.Content.ReadAsStringAsync();
+                MyAIAPI.FileInformation fileInformation = JsonSerializer.Deserialize<MyAIAPI.FileInformation>(responseJson)!;
+                return fileInformation;
             }
             catch (Exception ex)
             {
-                throw new Exception($"{ex.Message}");
+                throw new Exception($"Error retrieving file details: {ex.Message}");
             }
         }
-        public static async Task<byte[]> RetrieveFileContentsAsyncHttp(string fileId, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        public static async Task<string> RetrieveFileContentsAsyncHttp(string fileId, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
         {
             try
             {
-                // create an HTTP client
                 using HttpClient client = new();
                 client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
                 if (authEnabled)
@@ -1612,7 +1611,7 @@ namespace LocalAiAssistant
 #if WINDOWS
                 string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
 #elif ANDROID
-                string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
+        string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
 #endif
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
                 HttpResponseMessage response = await client.GetAsync($"{serverUrl}{filesEndpoint}/{fileId}/content");
@@ -1620,15 +1619,15 @@ namespace LocalAiAssistant
                 {
                     throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
                 }
-                byte[] file = JsonSerializer.Deserialize<byte[]>(await response.Content.ReadAsStringAsync())!;
-                return file;
+                string fileContent = await response.Content.ReadAsStringAsync();
+                return fileContent;
             }
             catch (Exception ex)
             {
-                throw new Exception($"{ex.Message}");
+                throw new Exception($"Error retrieving file contents: {ex.Message}");
             }
         }
-        public static async Task DeleteFileAsync(string fileUrl, string apiKey, int timeoutInSeconds = 60, bool authEnabled = true)
+        public static async Task DeleteFileAsync(string fileId, string serverUrl = "https://api.openai.com/v1", string apiKey = "sk-xxx", int timeoutInSeconds = 60, bool authEnabled = true)
         {
             try
             {
@@ -1639,15 +1638,13 @@ namespace LocalAiAssistant
                 {
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
                 }
-
-                string deleteEndpoint = $"{fileUrl}";
 #if WINDOWS
                 string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Safari/537.36";
 #elif ANDROID
                 string userAgent = "Mozilla/5.0 (Linux; Android 11; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.6029.110 Mobile Safari/537.36";
 #endif
                 client.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
-                HttpResponseMessage response = await client.DeleteAsync(deleteEndpoint);
+                HttpResponseMessage response = await client.DeleteAsync($"{serverUrl}{filesEndpoint}/{fileId}");
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception($"API request failed with status code: {(int)response.StatusCode}");

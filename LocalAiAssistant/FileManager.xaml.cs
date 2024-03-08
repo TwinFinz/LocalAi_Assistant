@@ -59,7 +59,7 @@ namespace LocalAiAssistant
                     string? curFileId = curFileString.Split('|').FirstOrDefault(part => part.Contains("Id"))?.Split(':').LastOrDefault()?.Trim();
                     if (curFileId != null)
                     {
-                        await MyAIAPI.DeleteFileAsync(fileUrl: $"{defaultData.DefaultServerUrl}/files/{curFileId}", apiKey: defaultData.DefaultApiKey, timeoutInSeconds: (int)defaultData.DefaultTimeOutDelay, authEnabled: defaultData.AuthEnabled);
+                        await MyAIAPI.DeleteFileAsync(fileId: curFileId, serverUrl: defaultData.DefaultServerUrl, apiKey: defaultData.DefaultApiKey, timeoutInSeconds: (int)defaultData.DefaultTimeOutDelay, authEnabled: defaultData.AuthEnabled);
                         await UpdateFiles();
                     }
                     else
