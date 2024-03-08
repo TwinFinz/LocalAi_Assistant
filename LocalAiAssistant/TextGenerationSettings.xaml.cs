@@ -10,6 +10,7 @@ namespace LocalAiAssistant
     public partial class TextGenerationSettings : ContentPage
     {
         public TextGenerationSettingsData UiData { get; set; } = new();
+        private GeneralSettingsData defaultData = new();
 #pragma warning disable IDE0044 // Add readonly modifier
 #pragma warning disable IDE0051 // Remove unused private members
 #pragma warning disable IDE0052 // Remove unread private members
@@ -43,6 +44,7 @@ namespace LocalAiAssistant
             ApiKeyInput.Unfocused += ApiKeyInput_Unfocused;
             this.SizeChanged += OnPageSizeChanged;
             DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
+            CustomServerSwitch.Toggled += CustomServerToggled;
         }
         private async void DeviceDisplay_MainDisplayInfoChanged(object? sender, DisplayInfoChangedEventArgs e)
         {
@@ -82,7 +84,18 @@ namespace LocalAiAssistant
 #endif
             }
         }
-
+        private void CustomServerToggled(object? sender, ToggledEventArgs e)
+        {
+            if (e.Value)
+            {
+                ServerInfoInput.IsVisible = true;
+            }
+            else
+            {
+                ServerInfoInput.IsVisible = false;
+            }
+            UiData.CustomServerEnabled = e.Value;
+        }
         private void ApiKeyInput_Unfocused(object? sender, FocusEventArgs e)
         {
             if (ApiKeyInput.Text.Length > 5)
@@ -160,15 +173,37 @@ namespace LocalAiAssistant
         private async void OnLoadBtnClicked(object? sender, EventArgs e)
         {
             SemanticScreenReader.Announce(LoadBtn.Text);
+            if (MyMultiPlatformUtils.CheckPreferenceContains(GeneralSettings.MainPreference))
+            {
+                GeneralSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(GeneralSettings.MainPreference);
+                if (saveData != null)
+                {
+                    defaultData.DefaultServerUrl = saveData.DefaultServerUrl;
+                    defaultData.AuthEnabled = saveData.AuthEnabled;
+                    defaultData.DefaultApiKey = saveData.DefaultApiKey;
+                    defaultData.EncryptEnabled = saveData.EncryptEnabled;
+                    defaultData.EncryptKey = saveData.EncryptKey;
+                }
+            }
             if (MyMultiPlatformUtils.CheckPreferenceContains(TextGenerationPreference))
             {
                 TextGenerationSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<TextGenerationSettingsData>(TextGenerationPreference);
                 if (saveData != null)
                 {
-                    UiData.ApiKey = saveData.ApiKey;
-                    UiData.ServerUrlInput = saveData.ServerUrlInput;
+                    UiData.CustomServerEnabled = saveData.CustomServerEnabled;
+                    if (UiData.CustomServerEnabled)
+                    {
+                        UiData.ServerUrlInput = saveData.ServerUrlInput;
+                        UiData.AuthEnabled = saveData.AuthEnabled;
+                        UiData.ApiKey = saveData.ApiKey;
+                    }
+                    else
+                    {
+                        UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                        UiData.AuthEnabled = defaultData.AuthEnabled;
+                        UiData.ApiKey = defaultData.DefaultApiKey;
+                    }
                     UiData.TimeOutDelay = saveData.TimeOutDelay;
-                    UiData.AuthEnabled = saveData.AuthEnabled;
                     UiData.TTSEnabled = saveData.TTSEnabled;
                     UiData.SystemPromptInput = saveData.SystemPromptInput;
                     UiData.ModelList = saveData.ModelList;
@@ -195,6 +230,12 @@ namespace LocalAiAssistant
                     UiData.MultiModal = saveData.MultiModal;
                 }
             }
+            else
+            {
+                UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                UiData.AuthEnabled = defaultData.AuthEnabled;
+                UiData.ApiKey = defaultData.DefaultApiKey;
+            }
         }
     }
     public class TextGenerationSettingsData : BindableObject
@@ -204,6 +245,9 @@ namespace LocalAiAssistant
         }
         public static readonly BindableProperty UserInputProperty = BindableProperty.Create(nameof(UserInput), typeof(string), typeof(TextGenerationSettingsData), string.Empty);
         public string UserInput { get => (string)GetValue(UserInputProperty); set => SetValue(UserInputProperty, value); }
+
+        public static readonly BindableProperty CustomServerEnabledProperty = BindableProperty.Create(nameof(CustomServerEnabled), typeof(bool), typeof(AudioGenerationSettingsData), false);
+        public bool CustomServerEnabled { get => (bool)GetValue(CustomServerEnabledProperty); set => SetValue(CustomServerEnabledProperty, value); }
 
         public static readonly BindableProperty ServerUrlProperty = BindableProperty.Create(nameof(ServerUrlInput), typeof(string), typeof(TextGenerationSettingsData), "https://api.openai.com/v1");
         public string ServerUrlInput { get => (string)GetValue(ServerUrlProperty); set => SetValue(ServerUrlProperty, value); }

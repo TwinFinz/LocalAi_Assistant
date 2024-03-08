@@ -19,6 +19,7 @@ namespace LocalAiAssistant
         };
         private static List<MyAIAPI.Message> curMessages = new() { SystemMessage };
         internal static TextGenerationSettingsData UiData = new();
+        private GeneralSettingsData defaultData = new();
         DisplayInfo displayInfo = new();
 
         public TextGeneration()
@@ -52,15 +53,37 @@ namespace LocalAiAssistant
         }
         private async Task LoadData()
         {
+            if (MyMultiPlatformUtils.CheckPreferenceContains(GeneralSettings.MainPreference))
+            {
+                GeneralSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(GeneralSettings.MainPreference);
+                if (saveData != null)
+                {
+                    defaultData.DefaultServerUrl = saveData.DefaultServerUrl;
+                    defaultData.AuthEnabled = saveData.AuthEnabled;
+                    defaultData.DefaultApiKey = saveData.DefaultApiKey;
+                    defaultData.EncryptEnabled = saveData.EncryptEnabled;
+                    defaultData.EncryptKey = saveData.EncryptKey;
+                }
+            }
             if (MyMultiPlatformUtils.CheckPreferenceContains(TextGenerationSettings.TextGenerationPreference))
             {
                 TextGenerationSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<TextGenerationSettingsData>(TextGenerationSettings.TextGenerationPreference);
                 if (saveData != null)
                 {
-                    UiData.ApiKey = saveData.ApiKey;
-                    UiData.ServerUrlInput = saveData.ServerUrlInput;
+                    UiData.CustomServerEnabled = saveData.CustomServerEnabled;
+                    if (UiData.CustomServerEnabled)
+                    {
+                        UiData.ServerUrlInput = saveData.ServerUrlInput;
+                        UiData.AuthEnabled = saveData.AuthEnabled;
+                        UiData.ApiKey = saveData.ApiKey;
+                    }
+                    else
+                    {
+                        UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                        UiData.AuthEnabled = defaultData.AuthEnabled;
+                        UiData.ApiKey = defaultData.DefaultApiKey;
+                    }
                     UiData.TimeOutDelay = saveData.TimeOutDelay;
-                    UiData.AuthEnabled = saveData.AuthEnabled;
                     UiData.TTSEnabled = saveData.TTSEnabled;
                     UiData.SystemPromptInput = saveData.SystemPromptInput;
                     UiData.ModelList = saveData.ModelList;
@@ -98,6 +121,12 @@ namespace LocalAiAssistant
                 { 
                     ContinueBtn.IsVisible = true;
                 }
+            }
+            else
+            {
+                UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                UiData.AuthEnabled = defaultData.AuthEnabled;
+                UiData.ApiKey = defaultData.DefaultApiKey;
             }
         }
         private async void TextGenerationLoaded(object? sender, EventArgs e)

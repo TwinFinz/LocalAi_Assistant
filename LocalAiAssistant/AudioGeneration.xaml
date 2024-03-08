@@ -6,7 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:LocalAiAssistant"
     x:DataType="local:AudioGenerationSettingsData"
-    x:Class="LocalAiAssistant.AudioGeneration">
+    x:Class="LocalAiAssistant.AudioGeneration"
+    Title="Audio Generation">
 
     <!--  Image2ImageContent  -->
     <ScrollView 

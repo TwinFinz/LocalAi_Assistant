@@ -106,9 +106,15 @@ namespace LocalAiAssistant
             SemanticScreenReader.Announce(LoadBtn.Text);
             if (MyMultiPlatformUtils.CheckPreferenceContains(MainPreference))
             {
-                UiData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(MainPreference) ?? new();
-                EncryptKeyInput.Text = UiData.EncryptKey;
-                EncryptSwitch.IsToggled = UiData.EncryptEnabled;
+                GeneralSettingsData saveData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(MainPreference) ?? new();
+                if (saveData != null)
+                {
+                    UiData.DefaultServerUrl = saveData.DefaultServerUrl;
+                    UiData.AuthEnabled = saveData.AuthEnabled;
+                    UiData.DefaultApiKey = saveData.DefaultApiKey;
+                    UiData.EncryptEnabled = saveData.EncryptEnabled;
+                    UiData.EncryptKey = saveData.EncryptKey;
+                }
             }
         }
     }
@@ -129,8 +135,14 @@ namespace LocalAiAssistant
         public static readonly BindableProperty EncryptKeyProperty = BindableProperty.Create(nameof(EncryptKey), typeof(string), typeof(GeneralSettingsData), string.Empty);
         public string EncryptKey { get => (string)GetValue(EncryptKeyProperty); set => SetValue(EncryptKeyProperty, value); }
 
-        public static readonly BindableProperty DefaultServerUrlProperty = BindableProperty.Create(nameof(DefaultServerUrl), typeof(string), typeof(GeneralSettingsData), string.Empty);
+        public static readonly BindableProperty DefaultServerUrlProperty = BindableProperty.Create(nameof(DefaultServerUrl), typeof(string), typeof(GeneralSettingsData), "https://api.openai.com/v1");
         public string DefaultServerUrl { get => (string)GetValue(DefaultServerUrlProperty); set => SetValue(DefaultServerUrlProperty, value); }
+
+        public static readonly BindableProperty AuthEnabledProperty = BindableProperty.Create(nameof(AuthEnabled), typeof(bool), typeof(AudioGenerationSettingsData), false);
+        public bool AuthEnabled { get => (bool)GetValue(AuthEnabledProperty); set => SetValue(AuthEnabledProperty, value); }
+
+        public static readonly BindableProperty DefaultApiKeyProperty = BindableProperty.Create(nameof(DefaultApiKey), typeof(string), typeof(GeneralSettingsData), "");
+        public string DefaultApiKey { get => (string)GetValue(DefaultApiKeyProperty); set => SetValue(DefaultApiKeyProperty, value); }
 
         /** Example Definitions **/
 

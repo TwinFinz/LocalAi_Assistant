@@ -6,7 +6,7 @@
     x:Class="LocalAiAssistant.GeneralSettings"
     xmlns:local="clr-namespace:LocalAiAssistant"
     x:DataType="local:GeneralSettingsData"
-    Title="GeneralSettings">
+    Title="General Settings">
 
     <ScrollView
         HorizontalScrollBarVisibility="Always">
@@ -43,25 +43,46 @@
                     Style="{StaticResource DefaultInputBox}"
                     SemanticProperties.Hint="User input box for Default Server Url"
                     Text="{Binding DefaultServerUrl, Mode=TwoWay}" />
-                <!--  Encrypt Key Input  -->
-                <Label 
-                    Text="Encrypt Key"
-                        Style="{StaticResource DefaultLabel}"/>
-                <Entry
-                    x:Name="EncryptKeyInput"
-                    Style="{StaticResource DefaultInputBox}"
-                    SemanticProperties.Hint="User input box for Encrypt key"
-                    Text="{Binding EncryptKey, Mode=TwoWay}" />
-                <!--  Switchs  -->
                 <HorizontalStackLayout
+                    VerticalOptions="Center" 
                     HorizontalOptions="Center">
-
-                    <!--  Encrypt Switch  -->
+                    <!-- Enable Auth Switch  -->
                     <Label
-                        Text="Encrypt Save Data"
+                        Text="Enable Auth" 
                         Style="{StaticResource DefaultLabel}"/>
-                    <Switch x:Name="EncryptSwitch" IsToggled="{Binding EncryptEnabled, Mode=TwoWay}" />
+                    <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
                 </HorizontalStackLayout>
+                <!--  API Key Input  -->
+                <Label 
+                    Text="API Key"
+                    Style="{StaticResource DefaultLabel}" />
+                <Entry
+                    x:Name="ApiKeyInput"
+                    Style="{StaticResource DefaultInputBox}"
+                    SemanticProperties.Hint="User input box for API key"
+                    Text="{Binding DefaultApiKey, Mode=TwoWay}"
+                    HorizontalOptions="FillAndExpand" />
+                <StackLayout x:Name="EncryptOptions" IsVisible="False">
+                    <!--  Encrypt Key Input  -->
+                    <Label 
+                        Text="Encrypt Key"
+                        Style="{StaticResource DefaultLabel}"/>
+                    <Entry
+                        x:Name="EncryptKeyInput"
+                        Style="{StaticResource DefaultInputBox}"
+                        SemanticProperties.Hint="User input box for Encrypt key"
+                        Text="{Binding EncryptKey, Mode=TwoWay}" />
+                    <!--  Switchs  -->
+                    <HorizontalStackLayout
+                        HorizontalOptions="Center">
+
+                        <!--  Encrypt Switch  -->
+                        <Label
+                            Text="Encrypt Save Data"
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Switch x:Name="EncryptSwitch" IsToggled="{Binding EncryptEnabled, Mode=TwoWay}" />
+                    </HorizontalStackLayout>
+                </StackLayout>
                 <HorizontalStackLayout
                     HorizontalOptions="Center">
                     <!--  Save Button  -->

@@ -34,7 +34,7 @@
 
         <Tab Title="Files">
             <ShellContent
-                Title="FileManager"
+                Title="Manager"
                 ContentTemplate="{DataTemplate local:FileManager}"
                 Route="FileManager" />
         </Tab>
@@ -53,7 +53,7 @@
             ContentTemplate="{DataTemplate local:ImageGenerationSettings}"
             Route="ImageGenerationSettings" />
             <ShellContent
-            Title="TTS Settings"
+            Title="Audio Settings"
             ContentTemplate="{DataTemplate local:AudioGenerationSettings}"
             Route="AudioGenerationSettings" />
         </Tab>

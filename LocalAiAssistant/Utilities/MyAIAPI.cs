@@ -853,7 +853,7 @@ namespace LocalAiAssistant
                 {
                     payload.Tools = tools;
                 }
-
+                string json = JsonSerializer.Serialize(payload);
 
                 using HttpClient client = new();
                 client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
@@ -865,7 +865,6 @@ namespace LocalAiAssistant
 
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                string json = JsonSerializer.Serialize(payload);
                 StringContent jsonContent = new(json, Encoding.UTF8, "application/json");
                 HttpRequestMessage httpRequest = new()
                 {
@@ -1194,7 +1193,7 @@ namespace LocalAiAssistant
                 throw new Exception($"{ex.Message}");
             }
         }
-        
+
         public static async Task<byte[]> GenerateSpeech(string prompt, string apiKey = "sk-xxx", string voice = "onyx", string model = "tts-1", string responseFormat = "mp3", double speed = 1.0, int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
         {
             try
@@ -1498,7 +1497,7 @@ namespace LocalAiAssistant
                 throw new Exception($"Error retrieving files: {ex.Message}");
             }
         }
-        public static async Task<string> UploadFileAsync(byte[] fileBytes, string purpose, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
+        public static async Task<string> UploadFileAsync(byte[] fileBytes, string fileName, string purpose, string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true)
         {
             try
             {
@@ -1511,7 +1510,7 @@ namespace LocalAiAssistant
                 }
                 MultipartFormDataContent formData = new MultipartFormDataContent();
                 formData.Add(new StringContent(purpose), "purpose");
-                formData.Add(new ByteArrayContent(fileBytes), "file", "filename.ext");
+                formData.Add(new ByteArrayContent(fileBytes), "file", fileName);
 
                 HttpResponseMessage response = await client.PostAsync($"{serverUrl}{filesEndpoint}", formData);
 
@@ -1878,7 +1877,7 @@ namespace LocalAiAssistant
             return models ?? new();
         }
 
-        
+
         #region TypeClasses
         public class Message
         {
@@ -1933,6 +1932,11 @@ namespace LocalAiAssistant
 
             [JsonPropertyName("tools")]
             public List<string> Tools { get; set; } = new();
+        }
+        public class LocalAiTextGenerationRequest : TextGenerationRequest
+        {
+            [JsonPropertyName("grammar")]
+            public string Grammar { get; set; } = "root ::= (\"yes\" | \"no\")";
         }
         public class TextGenerationChoice
         {

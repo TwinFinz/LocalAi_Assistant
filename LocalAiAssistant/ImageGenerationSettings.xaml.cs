@@ -8,6 +8,7 @@ namespace LocalAiAssistant
     {
         public ImageGenerationSettingsData UiData { get; set; } = new();
         internal static string StableDiffusionPreference = "LocalAiAssistant-StableDiffusion";
+        private GeneralSettingsData defaultData = new();
         public ImageGenerationSettings()
         {
             InitializeComponent();
@@ -17,6 +18,7 @@ namespace LocalAiAssistant
             SizeChanged += OnPageSizeChanged;
             DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
             OnPageSizeChanged(this, new EventArgs());
+            CustomServerSwitch.Toggled += CustomServerToggled;
         }
 
         private void ApiKeyInput_Unfocused(object? sender, FocusEventArgs e)
@@ -93,7 +95,18 @@ namespace LocalAiAssistant
 #endif
             }
         }
-
+        private void CustomServerToggled(object? sender, ToggledEventArgs e)
+        {
+            if (e.Value)
+            {
+                ServerInfoInput.IsVisible = true;
+            }
+            else
+            {
+                ServerInfoInput.IsVisible = false;
+            }
+            UiData.CustomServerEnabled = e.Value;
+        }
         private async void OnSaveBtnClicked(object? sender, EventArgs e)
         {
             SemanticScreenReader.Announce(SaveBtn.Text);
@@ -106,15 +119,37 @@ namespace LocalAiAssistant
         private async void OnLoadBtnClicked(object? sender, EventArgs e)
         {
             SemanticScreenReader.Announce(LoadBtn.Text);
+            if (MyMultiPlatformUtils.CheckPreferenceContains(GeneralSettings.MainPreference))
+            {
+                GeneralSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(GeneralSettings.MainPreference);
+                if (saveData != null)
+                {
+                    defaultData.DefaultServerUrl = saveData.DefaultServerUrl;
+                    defaultData.AuthEnabled = saveData.AuthEnabled;
+                    defaultData.DefaultApiKey = saveData.DefaultApiKey;
+                    defaultData.EncryptEnabled = saveData.EncryptEnabled;
+                    defaultData.EncryptKey = saveData.EncryptKey;
+                }
+            }
             if (MyMultiPlatformUtils.CheckPreferenceContains(StableDiffusionPreference))
             {
                 ImageGenerationSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<ImageGenerationSettingsData>(StableDiffusionPreference);
                 if (saveData != null)
                 {
-                    UiData.ApiKey = saveData.ApiKey;
-                    UiData.ServerUrlInput = saveData.ServerUrlInput;
+                    UiData.CustomServerEnabled = saveData.CustomServerEnabled;
+                    if (UiData.CustomServerEnabled)
+                    {
+                        UiData.ServerUrlInput = saveData.ServerUrlInput;
+                        UiData.AuthEnabled = saveData.AuthEnabled;
+                        UiData.ApiKey = saveData.ApiKey;
+                    }
+                    else
+                    {
+                        UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                        UiData.AuthEnabled = defaultData.AuthEnabled;
+                        UiData.ApiKey = defaultData.DefaultApiKey;
+                    }
                     UiData.TimeOutDelay = saveData.TimeOutDelay;
-                    UiData.AuthEnabled = saveData.AuthEnabled;
                     UiData.TTSEnabled = saveData.TTSEnabled;
                     UiData.Prompt = saveData.Prompt;
                     UiData.NegativePrompt = saveData.NegativePrompt;
@@ -211,6 +246,12 @@ namespace LocalAiAssistant
                     }
                 }
             }
+            else
+            {
+                UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                UiData.AuthEnabled = defaultData.AuthEnabled;
+                UiData.ApiKey = defaultData.DefaultApiKey;
+            }
         }
     }
     public class ImageGenerationSettingsData : BindableObject
@@ -229,6 +270,9 @@ namespace LocalAiAssistant
 
         public static readonly BindableProperty ServerModeProperty = BindableProperty.Create(nameof(ServerMode), typeof(ServerModes), typeof(ImageGenerationSettingsData), ServerModes.OpenAi);
         public ServerModes ServerMode { get => (ServerModes)GetValue(ServerModeProperty); set => SetValue(ServerModeProperty, value); }
+
+        public static readonly BindableProperty CustomServerEnabledProperty = BindableProperty.Create(nameof(CustomServerEnabled), typeof(bool), typeof(AudioGenerationSettingsData), false);
+        public bool CustomServerEnabled { get => (bool)GetValue(CustomServerEnabledProperty); set => SetValue(CustomServerEnabledProperty, value); }
 
         public static readonly BindableProperty ServerUrlProperty = BindableProperty.Create(nameof(ServerUrlInput), typeof(string), typeof(ImageGenerationSettingsData), "https://api.openai.com/v1");
         public string ServerUrlInput { get => (string)GetValue(ServerUrlProperty); set => SetValue(ServerUrlProperty, value); }

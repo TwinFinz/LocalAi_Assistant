@@ -15,6 +15,7 @@ public partial class AudioGeneration : ContentPage
     }
     #region Init/Events
     public AudioGenerationSettingsData UiData = new();
+    private GeneralSettingsData defaultData = new();
     private byte[]? curAudioBytes;
     private async void Txt2SpeechLoaded(object? sender, EventArgs e)
     {
@@ -22,15 +23,37 @@ public partial class AudioGeneration : ContentPage
     }
     private async Task LoadData()
     {
+        if (MyMultiPlatformUtils.CheckPreferenceContains(GeneralSettings.MainPreference))
+        {
+            GeneralSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(GeneralSettings.MainPreference);
+            if (saveData != null)
+            {
+                defaultData.DefaultServerUrl = saveData.DefaultServerUrl;
+                defaultData.AuthEnabled = saveData.AuthEnabled;
+                defaultData.DefaultApiKey = saveData.DefaultApiKey;
+                defaultData.EncryptEnabled = saveData.EncryptEnabled;
+                defaultData.EncryptKey = saveData.EncryptKey;
+            }
+        }
         if (MyMultiPlatformUtils.CheckPreferenceContains(AudioGenerationSettings.TtsPreference))
         {
             AudioGenerationSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<AudioGenerationSettingsData>(AudioGenerationSettings.TtsPreference);
             if (saveData != null)
             {
-                UiData.ApiKey = saveData.ApiKey;
-                UiData.ServerUrlInput = saveData.ServerUrlInput;
+                UiData.CustomServerEnabled = saveData.CustomServerEnabled;
+                if (UiData.CustomServerEnabled)
+                {
+                    UiData.ServerUrlInput = saveData.ServerUrlInput;
+                    UiData.AuthEnabled = saveData.AuthEnabled;
+                    UiData.ApiKey = saveData.ApiKey;
+                }
+                else
+                {
+                    UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                    UiData.AuthEnabled = defaultData.AuthEnabled;
+                    UiData.ApiKey = defaultData.DefaultApiKey;
+                }
                 UiData.TimeOutDelay = saveData.TimeOutDelay;
-                UiData.AuthEnabled = saveData.AuthEnabled;
                 UiData.TTSEnabled = saveData.TTSEnabled;
                 UiData.Speed = saveData.Speed;
                 UiData.SelectedModel = saveData.SelectedModel;
@@ -63,6 +86,12 @@ public partial class AudioGeneration : ContentPage
                     UiData.ServerMode = AudioGenerationSettingsData.ServerModes.OpenAi;
                 }
             }
+        }
+        else
+        {
+            UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+            UiData.AuthEnabled = defaultData.AuthEnabled;
+            UiData.ApiKey = defaultData.DefaultApiKey;
         }
     }
     private void OnPageSizeChanged(object? sender, EventArgs e)

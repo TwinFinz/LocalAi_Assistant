@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <x:String x:Key="HeaderText">Welcome to LocalAi Assistant!</x:String>
+    <x:String x:Key="HeaderText">LocalAi Assistant</x:String>
     <x:String x:Key="IntroText">
         <![CDATA[
                     Hey there! Welcome to the world of cutting-edge artificial intelligence! 🚀 This app is your guide to the amazing capabilities of LocalAi servers, designed to make your experience seamless and personal. Fancy a chat? Dive into conversations with our super-smart AI chatbot. It's like talking to a friend who always has the perfect response to your questions.

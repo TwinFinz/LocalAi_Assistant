@@ -54,7 +54,8 @@ public partial class FileManager : ContentPage
         try
         {
             byte[] selectedFileBytes = File.ReadAllBytes(fileSelected);
-            await MyAIAPI.UploadFileAsync(purpose: "fine-tune", fileBytes: selectedFileBytes, serverUrl: "http://192.168.0.100:4800/v1", apiKey: "", timeoutInSeconds: 60, authEnabled: false);
+            string selectedFileName = Path.GetFileName(fileSelected);
+            await MyAIAPI.UploadFileAsync(purpose: "fine-tune", fileBytes: selectedFileBytes, fileName: selectedFileName, serverUrl: "http://192.168.0.100:4800/v1", apiKey: "", timeoutInSeconds: 60, authEnabled: false);
         }
         catch (Exception ex)
         {

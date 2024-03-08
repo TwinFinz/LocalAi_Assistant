@@ -7,7 +7,8 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:local="clr-namespace:LocalAiAssistant"
     x:DataType="local:ImageGenerationSettingsData"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Image Generation">
 
     <!--  Text2ImageContent  -->
     <ScrollView 

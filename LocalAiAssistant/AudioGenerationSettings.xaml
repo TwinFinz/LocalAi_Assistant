@@ -6,52 +6,66 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:local="clr-namespace:LocalAiAssistant"
     x:DataType="local:AudioGenerationSettingsData"
-    Title="AudioGenerationSettings">
+    Title="Audio Generation Settings">
     
     <ScrollView 
     VerticalScrollBarVisibility="Always"
     HorizontalScrollBarVisibility="Always">
         <!--  Setting Items  -->
         <StackLayout>
-            <!--  Server Mode Picker  -->
-            <Picker
-                Title="Select Server Mode"
-                HorizontalOptions="FillAndExpand"
-                Margin="10, 0, 10, 0"
-                SelectedItem="{Binding ServerMode, Mode=TwoWay}"
-                ItemsSource="{Binding ServerModeNames, Mode=TwoWay}" 
-                SelectedIndex="{Binding SelectedServerModeIndex, Mode=TwoWay}"/>
-            <!--  Server URL Input  -->
-            <Label
+            <HorizontalStackLayout
+                VerticalOptions="Center" 
+                HorizontalOptions="Center">
+                <!-- Custom Server Switch  -->
+                <Label
+                    Text="Custom Server" 
+                    Style="{StaticResource DefaultLabel}"/>
+                    <Switch x:Name="CustomServerSwitch" IsToggled="{Binding CustomServerEnabled, Mode=TwoWay}" />
+            </HorizontalStackLayout>
+            <StackLayout 
+                x:Name="ServerInfoInput"
+                IsVisible="False"
+                Orientation="Vertical">
+                <!--  Server URL Input  -->
+                <Label
                 FontSize="Caption"
                 VerticalOptions="Center" 
                 HorizontalOptions="Center"
-                Text="Server URL" />
-            <Entry
+                Text="Custom Server Url" />
+                <Entry
                 x:Name="ServerUrlInputBox"
                 Style="{StaticResource DefaultInputBox}"
                 SemanticProperties.Hint="User input box for server url"
                 Text="{Binding ServerUrlInput, Mode=TwoWay}"
                 HorizontalOptions="FillAndExpand"/>
-            <!--  API Key Input  -->
-            <Label 
-                Text="API Key"
-                Style="{StaticResource DefaultLabel}" />
-            <Entry
-                x:Name="ApiKeyInput"
-                Style="{StaticResource DefaultInputBox}"
-                SemanticProperties.Hint="User input box for API key"
-                Text="{Binding ApiKey, Mode=TwoWay}"
-                HorizontalOptions="FillAndExpand" />
-            <HorizontalStackLayout
+                <HorizontalStackLayout
                     VerticalOptions="Center" 
                     HorizontalOptions="Center">
-                <!-- Enable Auth Switch  -->
-                <Label
+                    <!-- Enable Auth Switch  -->
+                    <Label
                         Text="Enable Auth" 
                         Style="{StaticResource DefaultLabel}"/>
-                <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
-            </HorizontalStackLayout>
+                    <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
+                </HorizontalStackLayout>
+                <!--  API Key Input  -->
+                <Label 
+                    Text="API Key"
+                    Style="{StaticResource DefaultLabel}" />
+                <Entry
+                    x:Name="ApiKeyInput"
+                    Style="{StaticResource DefaultInputBox}"
+                    SemanticProperties.Hint="User input box for API key"
+                    Text="{Binding ApiKey, Mode=TwoWay}"
+                    HorizontalOptions="FillAndExpand" />
+            </StackLayout>
+
+            <!--  Server Mode Picker  -->
+            <Picker
+                Title="Select Server Mode"
+                HorizontalOptions="FillAndExpand"
+                Margin="10, 0, 10, 0"
+                ItemsSource="{Binding ServerModeNames, Mode=TwoWay}" 
+                SelectedIndex="{Binding SelectedServerModeIndex, Mode=TwoWay}"/>
             <!--  OpenAi Specific Options -->
             <StackLayout
               x:Name="OpenAiOptionsView"
@@ -62,7 +76,6 @@
                   Title="Select Voice"
                   HorizontalOptions="FillAndExpand"
                   Margin="10, 0, 0, 0"
-                  SelectedItem="{Binding SelectedVoice, Mode=TwoWay}"
                   ItemsSource="{Binding OpenAiVoiceNames, Mode=TwoWay}" 
                   SelectedIndex="{Binding SelectedVoiceIndex, Mode=TwoWay}"/>
 

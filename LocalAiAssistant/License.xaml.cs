@@ -66,7 +66,7 @@ Copyright (c) Tesseract.Drawing (2022, Charles Weld)
 
 ";
 
-    private readonly string apacheSeparatorText = "\n\n--------------------------------------------------------Apache License--------------------------------------------------------\n\n";
+    private readonly string apacheSeparatorText = "\n\n---------------------------------------------------------\n			Apache License			\n---------------------------------------------------------\n\n";
     private readonly string apacheLicenseText =
 @"					Apache License
 				Version 2.0, January 2004
@@ -268,7 +268,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License";
 
-private readonly string mitSeparatorText = "\n\n--------------------------------------------------------Mit License--------------------------------------------------------\n\n";
+private readonly string mitSeparatorText = "\n\n---------------------------------------------------------\n			Mit License			\n---------------------------------------------------------\n\n";
 private readonly string mitLicenseText = 
 @"Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the ""Software""), to deal

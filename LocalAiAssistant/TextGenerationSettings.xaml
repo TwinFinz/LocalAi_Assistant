@@ -25,38 +25,51 @@
                 Grid.Column="0"
                 Margin="8"
                 Grid.ColumnSpan="3">
-                <!--  Server URL Input  -->
-                <Label 
-                    Text="Server Base URL"
-                        Style="{StaticResource DefaultLabel}" />
-                <Entry
-                    x:Name="ServerUrlInput"
-                    Style="{StaticResource DefaultInputBox}"
-                    SemanticProperties.Hint="User input box for server base url"
-                    Text="{Binding ServerUrlInput, Mode=TwoWay}"
-                    VerticalOptions="Fill" />
-                
-                <!--  API Key Input  -->
-                <Label 
-                    Text="API Key"
-                    Style="{StaticResource DefaultLabel}"/>
-                <Entry
-                    x:Name="ApiKeyInput"
-                    Style="{StaticResource DefaultInputBox}"
-                    SemanticProperties.Hint="User input box for API key"
-                    Text="{Binding ApiKey, Mode=TwoWay}"
-                    VerticalOptions="Fill" />
-    
                 <HorizontalStackLayout
                     VerticalOptions="Center" 
-                    HorizontalOptions="Center" >
-                    <!-- Enable Auth Switch  -->
+                    HorizontalOptions="Center">
+                    <!-- Custom Server Switch  -->
                     <Label
-                        Text="Enable Auth"
-                        Style="{StaticResource DefaultLabel}" />
-                    <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
-
+                        Text="Custom Server" 
+                        Style="{StaticResource DefaultLabel}"/>
+                    <Switch x:Name="CustomServerSwitch" IsToggled="{Binding CustomServerEnabled, Mode=TwoWay}" />
                 </HorizontalStackLayout>
+                <StackLayout 
+                    x:Name="ServerInfoInput"
+                    IsVisible="False"
+                    Orientation="Vertical">
+                    <!--  Server URL Input  -->
+                    <Label
+                        FontSize="Caption"
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center"
+                        Text="Custom Server Url" />
+                    <Entry
+                        x:Name="ServerUrlInput"
+                        Style="{StaticResource DefaultInputBox}"
+                        SemanticProperties.Hint="User input box for server url"
+                        Text="{Binding ServerUrlInput, Mode=TwoWay}"
+                        HorizontalOptions="FillAndExpand"/>
+                    <HorizontalStackLayout
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center">
+                        <!-- Enable Auth Switch  -->
+                        <Label
+                            Text="Enable Auth" 
+                            Style="{StaticResource DefaultLabel}"/>
+                        <Switch x:Name="AuthSwitch" IsToggled="{Binding AuthEnabled, Mode=TwoWay}" />
+                    </HorizontalStackLayout>
+                    <!--  API Key Input  -->
+                    <Label 
+                        Text="API Key"
+                        Style="{StaticResource DefaultLabel}" />
+                    <Entry
+                        x:Name="ApiKeyInput"
+                        Style="{StaticResource DefaultInputBox}"
+                        SemanticProperties.Hint="User input box for API key"
+                        Text="{Binding ApiKey, Mode=TwoWay}"
+                        HorizontalOptions="FillAndExpand" />
+                </StackLayout>
 
                 <!-- Models Picker -->
                 <Picker
@@ -75,6 +88,13 @@
                     VerticalOptions="Center" 
                     HorizontalOptions="Center" >
 
+                    <!-- Reload Button -->
+                    <Button
+                        x:Name="ReloadListBtn"
+                        Style="{StaticResource ButtonStyle}"
+                        Clicked="OnReloadListBtnClicked"
+                        Text="Reload List" />
+
                     <HorizontalStackLayout
                         VerticalOptions="Center" 
                         HorizontalOptions="Center" >
@@ -90,12 +110,6 @@
                             Style="{StaticResource DefaultLabel}" />
                         <Switch x:Name="MultiModalSwitch" IsToggled="{Binding MultiModal, Mode=TwoWay}" />
                         </HorizontalStackLayout>
-                    <!-- Reload Button -->
-                        <Button
-                        x:Name="ReloadListBtn"
-                        Style="{StaticResource ButtonStyle}"
-                        Clicked="OnReloadListBtnClicked"
-                        Text="Reload List" />
                 </StackLayout>
 
                 <!--  System Prompt Input  -->

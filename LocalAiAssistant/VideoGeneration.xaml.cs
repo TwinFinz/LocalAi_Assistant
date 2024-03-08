@@ -8,32 +8,50 @@ public partial class VideoGeneration : ContentPage
     {
         InitializeComponent();
         BindingContext = UiData;
-        this.Loaded += Txt2VideoLoaded;
         SizeChanged += OnPageSizeChanged;
+        Task.Run(async () => await LoadData());
     }
     #region Init/Events
     public ImageGenerationSettingsData UiData = new();
+    private GeneralSettingsData defaultData = new();
     private byte[]? curVideoBytes;
-    private async void Txt2VideoLoaded(object? sender, EventArgs e)
-    {
-        await LoadData();
-    }
     private async Task LoadData()
     {
+        if (MyMultiPlatformUtils.CheckPreferenceContains(GeneralSettings.MainPreference))
+        {
+            GeneralSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(GeneralSettings.MainPreference);
+            if (saveData != null)
+            {
+                defaultData.DefaultServerUrl = saveData.DefaultServerUrl;
+                defaultData.AuthEnabled = saveData.AuthEnabled;
+                defaultData.DefaultApiKey = saveData.DefaultApiKey;
+                defaultData.EncryptEnabled = saveData.EncryptEnabled;
+                defaultData.EncryptKey = saveData.EncryptKey;
+            }
+        }
         if (MyMultiPlatformUtils.CheckPreferenceContains(ImageGenerationSettings.StableDiffusionPreference))
         {
             ImageGenerationSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<ImageGenerationSettingsData>(ImageGenerationSettings.StableDiffusionPreference);
             if (saveData != null)
             {
-                UiData.ApiKey = saveData.ApiKey;
-                UiData.ServerUrlInput = saveData.ServerUrlInput;
+                UiData.CustomServerEnabled = saveData.CustomServerEnabled;
+                if (UiData.CustomServerEnabled)
+                {
+                    UiData.ServerUrlInput = saveData.ServerUrlInput;
+                    UiData.AuthEnabled = saveData.AuthEnabled;
+                    UiData.ApiKey = saveData.ApiKey;
+                }
+                else
+                {
+                    UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+                    UiData.AuthEnabled = defaultData.AuthEnabled;
+                    UiData.ApiKey = defaultData.DefaultApiKey;
+                }
                 UiData.TimeOutDelay = saveData.TimeOutDelay;
-                UiData.AuthEnabled = saveData.AuthEnabled;
                 UiData.TTSEnabled = saveData.TTSEnabled;
                 UiData.Prompt = saveData.Prompt;
                 UiData.NegativePrompt = saveData.NegativePrompt;
                 UiData.SelectedTxt2ImgModel = saveData.SelectedTxt2ImgModel;
-                UiData.SelectedImg2ImgModel = saveData.SelectedImg2ImgModel;
                 UiData.SamplingMethod = saveData.SamplingMethod;
                 UiData.SamplingSteps = saveData.SamplingSteps;
                 UiData.CFGScale = saveData.CFGScale;
@@ -84,10 +102,8 @@ public partial class VideoGeneration : ContentPage
                 UiData.SaveImages = saveData.SaveImages;
                 UiData.OverrideSettingsRestoreAfterwards = saveData.OverrideSettingsRestoreAfterwards;
                 UiData.InvertMask = saveData.InvertMask;
-                UiData.MediaSource = saveData.MediaSource;
                 UiData.ModelList = saveData.ModelList;
                 UiData.SelectedTxt2ImgModelIndex = saveData.SelectedTxt2ImgModelIndex;
-                UiData.SelectedImg2ImgModelIndex = saveData.SelectedImg2ImgModelIndex;
                 if (UiData.ServerModeNames.Count > 1 && saveData.SelectedServerModeIndex < UiData.ServerModeNames.Count)
                 {
                     UiData.ServerMode = (ImageGenerationSettingsData.ServerModes)saveData.SelectedServerModeIndex;
@@ -110,14 +126,20 @@ public partial class VideoGeneration : ContentPage
                 UiData.SelectedTxt2VideoModelIndex = saveData.SelectedTxt2VideoModelIndex;
                 if (UiData.ModelList.Count > 1 && UiData.SelectedTxt2VideoModelIndex > 0 && UiData.SelectedTxt2VideoModelIndex < UiData.ModelList.Count)
                 {
-                    UiData.SelectedTxt2VideoModel = saveData.ModelList[saveData.SelectedTxt2VideoModelIndex];
+                    UiData.SelectedImg2ImgModel = saveData.ModelList[saveData.SelectedTxt2VideoModelIndex];
                 }
                 UiData.SelectedImg2VideoModelIndex = saveData.SelectedImg2VideoModelIndex;
                 if (UiData.ModelList.Count > 1 && UiData.SelectedImg2VideoModelIndex > 0 && UiData.SelectedImg2VideoModelIndex < UiData.ModelList.Count)
                 {
-                    UiData.SelectedImg2VideoModel = saveData.ModelList[saveData.SelectedImg2VideoModelIndex];
+                    UiData.SelectedImg2ImgModel = saveData.ModelList[saveData.SelectedImg2VideoModelIndex];
                 }
             }
+        }
+        else
+        {
+            UiData.ServerUrlInput = defaultData.DefaultServerUrl;
+            UiData.AuthEnabled = defaultData.AuthEnabled;
+            UiData.ApiKey = defaultData.DefaultApiKey;
         }
     }
     private void OnPageSizeChanged(object? sender, EventArgs e)
