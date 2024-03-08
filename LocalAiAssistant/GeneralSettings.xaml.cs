@@ -90,6 +90,12 @@ namespace LocalAiAssistant
             BindingContext = UiData;
             OnLoadBtnClicked(this, new EventArgs());
         }
+
+        private void TimeOutDelaySliderChanged(object sender, ValueChangedEventArgs e)
+        {
+            double roundedValue = Math.Round(e.NewValue);
+            UiData.DefaultTimeOutDelay = roundedValue;
+        }
         private async void OnSaveBtnClicked(object? sender, EventArgs e)
         {
             SemanticScreenReader.Announce(SaveBtn.Text);
@@ -114,6 +120,7 @@ namespace LocalAiAssistant
                     UiData.DefaultApiKey = saveData.DefaultApiKey;
                     UiData.EncryptEnabled = saveData.EncryptEnabled;
                     UiData.EncryptKey = saveData.EncryptKey;
+                    UiData.DefaultTimeOutDelay = saveData.DefaultTimeOutDelay;
                 }
             }
         }
@@ -143,6 +150,9 @@ namespace LocalAiAssistant
 
         public static readonly BindableProperty DefaultApiKeyProperty = BindableProperty.Create(nameof(DefaultApiKey), typeof(string), typeof(GeneralSettingsData), "");
         public string DefaultApiKey { get => (string)GetValue(DefaultApiKeyProperty); set => SetValue(DefaultApiKeyProperty, value); }
+
+        public static readonly BindableProperty DefaultTimeOutDelayProperty = BindableProperty.Create(nameof(DefaultTimeOutDelay), typeof(double), typeof(AudioGenerationSettingsData), 60.0);
+        public double DefaultTimeOutDelay { get => (double)GetValue(DefaultTimeOutDelayProperty); set => SetValue(DefaultTimeOutDelayProperty, value); }
 
         /** Example Definitions **/
 

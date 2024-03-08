@@ -40,7 +40,7 @@
                     x:Name="FilesListView"
                     Margin="8"
                     BackgroundColor="#202020"
-                    ItemsSource="{Binding Stop}"
+                    ItemsSource="{Binding Files}"
                     VerticalOptions="FillAndExpand">
                     <ListView.ItemTemplate>
                         <DataTemplate>

@@ -62,6 +62,17 @@
                     SemanticProperties.Hint="User input box for API key"
                     Text="{Binding DefaultApiKey, Mode=TwoWay}"
                     HorizontalOptions="FillAndExpand" />
+                <!--  Timeout Delay Slider  -->
+                <Label
+                    Style="{StaticResource DefaultLabel}"
+                    Text="{Binding DefaultTimeOutDelay, StringFormat='Timeout: {0}'}" />
+                <Slider
+                    x:Name="TimeOutDelaySlider"
+                    Margin="10, 0, 15, 0"
+                    Maximum="250"
+                    Minimum="1"
+                    ValueChanged="TimeOutDelaySliderChanged"
+                    Value="{Binding DefaultTimeOutDelay, Mode=TwoWay}" />
                 <StackLayout x:Name="EncryptOptions" IsVisible="False">
                     <!--  Encrypt Key Input  -->
                     <Label 

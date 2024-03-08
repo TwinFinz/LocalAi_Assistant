@@ -80,6 +80,7 @@ namespace LocalAiAssistant
                     defaultData.DefaultApiKey = saveData.DefaultApiKey;
                     defaultData.EncryptEnabled = saveData.EncryptEnabled;
                     defaultData.EncryptKey = saveData.EncryptKey;
+                    defaultData.DefaultTimeOutDelay = saveData.DefaultTimeOutDelay;
                 }
             }
             if (MyMultiPlatformUtils.CheckPreferenceContains(ImageGenerationSettings.StableDiffusionPreference))

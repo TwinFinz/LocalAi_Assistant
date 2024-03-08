@@ -28,16 +28,16 @@
                 Orientation="Vertical">
                 <!--  Server URL Input  -->
                 <Label
-                FontSize="Caption"
-                VerticalOptions="Center" 
-                HorizontalOptions="Center"
-                Text="Custom Server Url" />
+                    FontSize="Caption"
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center"
+                    Text="Custom Server Url" />
                 <Entry
-                x:Name="ServerUrlInputBox"
-                Style="{StaticResource DefaultInputBox}"
-                SemanticProperties.Hint="User input box for server url"
-                Text="{Binding ServerUrlInput, Mode=TwoWay}"
-                HorizontalOptions="FillAndExpand"/>
+                    x:Name="ServerUrlInputBox"
+                    Style="{StaticResource DefaultInputBox}"
+                    SemanticProperties.Hint="User input box for server url"
+                    Text="{Binding ServerUrlInput, Mode=TwoWay}"
+                    HorizontalOptions="FillAndExpand"/>
                 <HorizontalStackLayout
                     VerticalOptions="Center" 
                     HorizontalOptions="Center">
@@ -91,7 +91,7 @@
                   ValueChanged="SpeedSliderChanged"
                   Value="{Binding Speed, Mode=TwoWay}" />
             </StackLayout>
-            <!--  Sampling Steps Slider  -->
+            <!--  Timeout Delay Slider  -->
             <Label
                 Style="{StaticResource DefaultLabel}"
                 Text="{Binding TimeOutDelay, StringFormat='Timeout: {0}'}" />

@@ -13,6 +13,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.ConstrainedExecution;
 using System.Threading;
+using Microsoft.Maui.Storage;
 
 namespace LocalAiAssistant
 {
@@ -1461,7 +1462,8 @@ namespace LocalAiAssistant
                 throw new Exception($"{ex.Message}");
             }
         }
-        public static async Task<List<string>> GetFilesAsync(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true, CancellationToken cancellationToken = default)
+        
+        public static async Task<List<string>> GetFilesListAsync(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1487,10 +1489,40 @@ namespace LocalAiAssistant
                 List<string> filesList = new List<string>();
                 foreach (var file in filesResponse.Data)
                 {
-                    filesList.Add(file.Filename);
+                    filesList.Add(file.Id);
                 }
 
                 return filesList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error retrieving files: {ex.Message}");
+            }
+        }
+        public static async Task<List<MyAIAPI.FileInformation>> GetFilesAsync(string apiKey = "sk-xxx", int timeoutInSeconds = 60, string serverUrl = "https://api.openai.com/v1", bool authEnabled = true, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                using HttpClient client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
+                if (authEnabled)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+                }
+
+                HttpResponseMessage response = await client.GetAsync($"{serverUrl}{filesEndpoint}", cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"API request failed with status code: {(int)response.StatusCode}");
+                }
+
+                string responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+                FileListResponse? filesResponse = JsonSerializer.Deserialize<FileListResponse>(responseJson);
+                if (filesResponse == null)
+                {
+                    throw new Exception("Json deserialization failed.");
+                }
+                return filesResponse.Data;
             }
             catch (Exception ex)
             {
@@ -1508,7 +1540,7 @@ namespace LocalAiAssistant
                 {
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
                 }
-                MultipartFormDataContent formData = new MultipartFormDataContent();
+                using MultipartFormDataContent formData = new();
                 formData.Add(new StringContent(purpose), "purpose");
                 formData.Add(new ByteArrayContent(fileBytes), "file", fileName);
 
