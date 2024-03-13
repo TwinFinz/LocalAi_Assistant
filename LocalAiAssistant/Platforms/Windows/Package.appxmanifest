@@ -7,7 +7,7 @@
   xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
   IgnorableNamespaces="uap rescap uap3">
 
-  <Identity Name="63442TwinLunarStarZ.LocalAiAssistant" Publisher="CN=64063947-E2F5-4C7E-AFA0-03892CE7351A" Version="1.0.0.0" />
+  <Identity Name="63442TwinLunarStarZ.LocalAiAssistant" Publisher="CN=64063947-E2F5-4C7E-AFA0-03892CE7351A" Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="6432844b-54ab-407d-8674-0e2813b8c790" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -31,15 +31,21 @@
       <uap:VisualElements
         DisplayName="LocalAi Assistant"
         Description="LocalAi Assistant is a simplistic UI for a LocalAI or OpenAi server."
-        BackgroundColor="transparent" Square150x150Logo="Resources\Images\GeneratedIcons\tile_m.png" Square44x44Logo="Resources\Images\GeneratedIcons\app_icon.png">
+        BackgroundColor="transparent"  Square150x150Logo="Resources\Images\GeneratedIcons\tile_m.png" Square44x44Logo="Resources\Images\GeneratedIcons\app_icon.png">
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="landscape"/>
           <uap:Rotation Preference="portrait"/>
           <uap:Rotation Preference="landscapeFlipped"/>
           <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
+        <uap:LockScreen Notification="badge" BadgeLogo="Resources\Images\GeneratedIcons\badge_logo.png"/>
+        <uap:DefaultTile Square71x71Logo="Resources\Images\GeneratedIcons\tile_s.png" Wide310x150Logo="Resources\Images\GeneratedIcons\tile_w.png" Square310x310Logo="Resources\Images\GeneratedIcons\tile_l.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo"/>
+            <uap:ShowOn Tile="wide310x150Logo"/>
+            <uap:ShowOn Tile="square310x310Logo"/>
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
         <uap:SplashScreen Image="Resources\Images\GeneratedIcons\splash.png"/>
-        <uap:DefaultTile Square71x71Logo="Resources\Images\GeneratedIcons\tile_s.png" Wide310x150Logo="Resources\Images\GeneratedIcons\tile_w.png" Square310x310Logo="Resources\Images\GeneratedIcons\tile_l.png"/>
-        <uap:LockScreen BadgeLogo="Resources\Images\GeneratedIcons\badge_logo.png" Notification="badge"/>
       </uap:VisualElements>
     </Application>
   </Applications>

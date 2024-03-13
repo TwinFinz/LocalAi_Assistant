@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:LocalAiAssistant"
     x:Class="LocalAiAssistant.FileManager"
+    x:DataType="local:FileManagerData"
     Title="File Manager">
 
     <!--  Image2ImageContent  -->

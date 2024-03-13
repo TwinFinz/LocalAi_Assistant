@@ -13,7 +13,7 @@ Video Generation (Untested),
 Audio Generation
 
 # Store Links:
-Microsoft Store: Coming Soon!  || Google Play: Coming Soon!
+Microsoft Store: https://www.microsoft.com/store/productId/9P6R6BQPSNN7?ocid=pdpshare  || Google Play: https://play.google.com/store/apps/details?id=com.TwinLunarStarZ.LocalAiAssistant
 
 # Build:
 Copy the "LocalAiAssistant.csproj" file into the "LocalAiAssistant" folder.

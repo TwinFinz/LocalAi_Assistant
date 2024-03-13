@@ -6,8 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:LocalAiAssistant"
     x:DataType="local:AudioGenerationSettingsData"
-    x:Class="LocalAiAssistant.AudioGeneration"
-    Title="Audio Generation">
+    x:Class="LocalAiAssistant.TranscriptionGeneration"
+    Title="Transcription Generation">
 
     <!--  Image2ImageContent  -->
     <ScrollView 
@@ -68,7 +68,6 @@
                             Style="{StaticResource DefaultInputBox}"
                             SemanticProperties.Hint="User input box for server url"
                             Text="{Binding Prompt, Mode=TwoWay}"
-                            Completed="OnUserInputCompleted"
                             VerticalOptions="Start" />
                         <!--  OpenAi Specific Options -->
                         <StackLayout

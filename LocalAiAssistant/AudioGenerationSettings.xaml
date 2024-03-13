@@ -9,6 +9,7 @@
     Title="Audio Generation Settings">
     
     <ScrollView 
+        x:Name="MainView"
     VerticalScrollBarVisibility="Always"
     HorizontalScrollBarVisibility="Always">
         <!--  Setting Items  -->
@@ -102,30 +103,46 @@
                 Minimum="1"
                 ValueChanged="TimeOutDelaySliderChanged"
                 Value="{Binding TimeOutDelay, Mode=TwoWay}" />
-            <!-- Models Picker -->
-            <Picker
-                x:Name="PrimaryModelPicker"
-                Margin="8"
-                BackgroundColor="#383838"
-                Title="Select a Model"
-                ItemsSource="{Binding ModelList, Mode=TwoWay}"
-                SelectedIndex="{Binding SelectedModelIndex, Mode=TwoWay}"
-                SelectedIndexChanged="OnModelSelected"
-                MinimumWidthRequest="300"
-                HorizontalOptions="FillAndExpand"/>
+            <StackLayout 
+                x:Name="ModelPickers"
+                Orientation="Horizontal">
+                <!-- Models Picker -->
+                <Picker
+                    x:Name="PrimaryModelPicker"
+                    Margin="8"
+                    BackgroundColor="#383838"
+                    Title="Select TTS Model"
+                    ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                    SelectedIndex="{Binding SelectedModelIndex, Mode=TwoWay}"
+                    SelectedIndexChanged="OnModelSelected"
+                    MinimumWidthRequest="300"
+                    HorizontalOptions="FillAndExpand"/>
             
-            <!-- Secondary Models Picker -->
-            <Picker
-                x:Name="SecondaryModelPicker"
-                Margin="8"
-                BackgroundColor="#383838"
-                Title="Select a Model"
-                ItemsSource="{Binding ModelList2, Mode=TwoWay}"
-                SelectedIndex="{Binding SelectedModelIndex2, Mode=TwoWay}"
-                MinimumWidthRequest="300"
-                IsVisible="False"
-                HorizontalOptions="FillAndExpand"/>
+                <!-- Secondary Models Picker -->
+                <Picker
+                    x:Name="SecondaryModelPicker"
+                    Margin="8"
+                    BackgroundColor="#383838"
+                    Title="Select Voice Model"
+                    ItemsSource="{Binding SecondaryModelList, Mode=TwoWay}"
+                    SelectedIndex="{Binding SelectedModelIndex2, Mode=TwoWay}"
+                    SelectedIndexChanged="OnSecondaryModelSelected"
+                    MinimumWidthRequest="300"
+                    IsVisible="False"
+                    HorizontalOptions="FillAndExpand"/>
 
+                <!-- Transcription Models Picker -->
+                <Picker
+                    x:Name="TranscriptionModelPicker"
+                    Margin="8"
+                    BackgroundColor="#383838"
+                    Title="Select Transcription Model"
+                    ItemsSource="{Binding ModelList, Mode=TwoWay}"
+                    SelectedIndex="{Binding SelectedTranscriptionModelIndex, Mode=TwoWay}"
+                    SelectedIndexChanged="OnTranscriptionModelSelected"
+                    MinimumWidthRequest="300"
+                    HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
             <!-- Reload Button -->
             <Button
                 x:Name="ReloadListBtn"

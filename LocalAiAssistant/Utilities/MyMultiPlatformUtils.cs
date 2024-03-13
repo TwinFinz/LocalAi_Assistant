@@ -22,6 +22,10 @@ using System.Security.Cryptography;
 using System.Net;
 using CommunityToolkit.Maui.Views;
 using System.Threading;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+
+
 
 #if ANDROID
 using Android.Content;
@@ -147,7 +151,7 @@ namespace LocalAiAssistant.Utilities
             }
             return false;
         }
-        internal async Task<bool> MessageBoxWithYesNo(Application application, string title, string promptMessage, string confirm = "Yes", string cancel = "No")
+        internal static async Task<bool> MessageBoxWithYesNo(Application application, string title, string promptMessage, string confirm = "Yes", string cancel = "No")
         {
             bool result = false;
             if (application.Dispatcher.IsDispatchRequired)
@@ -167,6 +171,25 @@ namespace LocalAiAssistant.Utilities
                 }
             }
             return result;
+        }
+        public static async Task ShowSnackBar(Application application, string message, int timeOutDelay = 5, CancellationToken cancellationToken = default)
+        {
+            if (application.Dispatcher.IsDispatchRequired)
+            {
+                await Microsoft.Maui.Controls.Application.Current!.Dispatcher.DispatchAsync(async () =>
+                {
+                    await ShowSnackBar(application, message);
+                });
+            }
+            else
+            {
+                SnackbarOptions options = new SnackbarOptions()
+                {
+                    BackgroundColor = Microsoft.Maui.Graphics.Color.FromRgba(36, 36, 36, 255),
+                    CornerRadius = 14
+                };
+                await Microsoft.Maui.Controls.Application.Current!.MainPage!.DisplaySnackbar(message, token: cancellationToken, visualOptions: options, duration: TimeSpan.FromSeconds(timeOutDelay), actionButtonText: "X");
+            }
         }
         internal static bool IsFolderWritable(string folderPath)
         {
@@ -192,7 +215,7 @@ namespace LocalAiAssistant.Utilities
 
             CancellationTokenSource source = new();
             CancellationToken token = source.Token;
-            var selectedFolder = await FolderPicker.Default.PickAsync(startpath, token);
+            FolderPickerResult? selectedFolder = await FolderPicker.Default.PickAsync(startpath, token);
             if (selectedFolder != null)
             {
                 string folderPath = selectedFolder.Folder!.Path;
@@ -205,7 +228,7 @@ namespace LocalAiAssistant.Utilities
         }
         internal static async Task<byte[]?> PickImageAsync()
         {
-            var result = await MediaPicker.PickPhotoAsync();
+            FileResult? result = await MediaPicker.PickPhotoAsync();
 
             if (result == null)
             {
@@ -215,10 +238,9 @@ namespace LocalAiAssistant.Utilities
             string filePath = result.FullPath;
             return File.ReadAllBytes(filePath);
         }
-
         internal static async Task<string?> PickFileAsync()
         {
-            var result = await FilePicker.PickAsync();
+            FileResult? result = await FilePicker.PickAsync();
 
             if (result == null)
             {

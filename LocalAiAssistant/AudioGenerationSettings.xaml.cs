@@ -8,6 +8,8 @@ namespace LocalAiAssistant
     {
         public AudioGenerationSettingsData UiData { get; set; } = new();
         internal static string TtsPreference = "LocalAiAssistant-TTS";
+        internal static string ModelListPreference = "LocalAiAssistant-Models";
+        internal static string SecondaryModelListPreference = "LocalAiAssistant-SecondaryModels";
         private GeneralSettingsData defaultData = new();
         public AudioGenerationSettings()
         {
@@ -15,9 +17,11 @@ namespace LocalAiAssistant
             BindingContext = UiData;
             OnLoadBtnClicked(this, new EventArgs());
             ApiKeyInput.Unfocused += ApiKeyInput_Unfocused;
+            SizeChanged += OnPageSizeChanged;
+            DeviceDisplay.MainDisplayInfoChanged += DeviceDisplay_MainDisplayInfoChanged;
             CustomServerSwitch.Toggled += CustomServerToggled;
         }
-        private List<string> BarkModels = new List<string>()
+        public List<string> BarkModels = new List<string>()
         {
             "v2/en_speaker_0",
             "v2/en_speaker_1",
@@ -150,12 +154,100 @@ namespace LocalAiAssistant
             "v2/tr_speaker_8",
             "v2/tr_speaker_9"
         };
-        private List<string> CoquiModels = new List<string>()
+        public List<string> CoquiModels = new List<string>()
         {
+            "tts_models/multilingual/multi-dataset/xtts_v2",
+            "tts_models/multilingual/multi-dataset/xtts_v1.1",
+            "tts_models/multilingual/multi-dataset/your_tts",
+            "tts_models/multilingual/multi-dataset/bark",
+            "tts_models/bg/cv/vits",
+            "tts_models/cs/cv/vits",
+            "tts_models/da/cv/vits",
+            "tts_models/et/cv/vits",
+            "tts_models/ga/cv/vits",
+            "tts_models/en/ek1/tacotron2",
+            "tts_models/en/ljspeech/tacotron2-DDC",
+            "tts_models/en/ljspeech/tacotron2-DDC_ph",
+            "tts_models/en/ljspeech/glow-tts",
+            "tts_models/en/ljspeech/speedy-speech",
+            "tts_models/en/ljspeech/tacotron2-DCA",
+            "tts_models/en/ljspeech/vits",
+            "tts_models/en/ljspeech/vits--neon",
+            "tts_models/en/ljspeech/fast_pitch",
+            "tts_models/en/ljspeech/overflow",
+            "tts_models/en/ljspeech/neural_hmm",
             "tts_models/en/vctk/vits",
-            "tts_models/en/ljspeech/glow-tts"
+            "tts_models/en/vctk/fast_pitch",
+            "tts_models/en/sam/tacotron-DDC",
+            "tts_models/en/blizzard2013/capacitron-t2-c50",
+            "tts_models/en/blizzard2013/capacitron-t2-c150_v2",
+            "tts_models/en/multi-dataset/tortoise-v2",
+            "tts_models/en/jenny/jenny",
+            "tts_models/es/mai/tacotron2-DDC",
+            "tts_models/es/css10/vits",
+            "tts_models/fr/mai/tacotron2-DDC",
+            "tts_models/fr/css10/vits",
+            "tts_models/uk/mai/glow-tts",
+            "tts_models/uk/mai/vits",
+            "tts_models/zh-CN/baker/tacotron2-DDC-GST",
+            "tts_models/nl/mai/tacotron2-DDC",
+            "tts_models/nl/css10/vits",
+            "tts_models/de/thorsten/tacotron2-DCA",
+            "tts_models/de/thorsten/vits",
+            "tts_models/de/thorsten/tacotron2-DDC",
+            "tts_models/de/css10/vits-neon",
+            "tts_models/ja/kokoro/tacotron2-DDC",
+            "tts_models/tr/common-voice/glow-tts",
+            "tts_models/it/mai_female/glow-tts",
+            "tts_models/it/mai_female/vits",
+            "tts_models/it/mai_male/glow-tts",
+            "tts_models/it/mai_male/vits",
+            "tts_models/ewe/openbible/vits",
+            "tts_models/hau/openbible/vits",
+            "tts_models/lin/openbible/vits",
+            "tts_models/tw_akuapem/openbible/vits",
+            "tts_models/tw_asante/openbible/vits",
+            "tts_models/yor/openbible/vits",
+            "tts_models/hu/css10/vits",
+            "tts_models/el/cv/vits",
+            "tts_models/fi/css10/vits",
+            "tts_models/hr/cv/vits",
+            "tts_models/lt/cv/vits",
+            "tts_models/lv/cv/vits",
+            "tts_models/mt/cv/vits",
+            "tts_models/pl/mai_female/vits",
+            "tts_models/pt/cv/vits",
+            "tts_models/ro/cv/vits",
+            "tts_models/sk/cv/vits",
+            "tts_models/sl/cv/vits",
+            "tts_models/sv/cv/vits",
+            "tts_models/ca/custom/vits",
+            "tts_models/fa/custom/glow-tts",
+            "tts_models/bn/custom/vits-male",
+            "tts_models/bn/custom/vits-female",
+            "tts_models/be/common-voice/glow-tts",
         };
-        private List<string> PiperModels = new List<string>()
+        public List<string> CoquiVocoderModels = new List<string>()
+        {        
+            "vocoder_models/universal/libri-tts/wavegrad",
+            "vocoder_models/universal/libri-tts/fullband-melgan",
+            "vocoder_models/en/ek1/wavegrad",
+            "vocoder_models/en/ljspeech/multiband-melgan",
+            "vocoder_models/en/ljspeech/hifigan_v2",
+            "vocoder_models/en/ljspeech/univnet",
+            "vocoder_models/en/blizzard2013/hifigan_v2",
+            "vocoder_models/en/vctk/hifigan_v2",
+            "vocoder_models/en/sam/hifigan_v2",
+            "vocoder_models/nl/mai/parallel-wavegan",
+            "vocoder_models/de/thorsten/wavegrad",
+            "vocoder_models/de/thorsten/fullband-melgan",
+            "vocoder_models/de/thorsten/hifigan_v1",
+            "vocoder_models/ja/kokoro/hifigan_v1",
+            "vocoder_models/uk/mai/multiband-melgan",
+            "vocoder_models/tr/common-voice/hifigan",
+            "vocoder_models/be/common-voice/hifigan"
+        };
+        public List<string> PiperModels = new List<string>()
         {
             "",
             ""
@@ -164,25 +256,79 @@ namespace LocalAiAssistant
         {
             if (UiData.ModelList.Count > 0 && UiData.SelectedModelIndex >= 0 && UiData.SelectedModelIndex < UiData.ModelList.Count)
             {
+                UiData.SelectedModel = UiData.ModelList[UiData.SelectedModelIndex];
                 if (UiData.ModelList[UiData.SelectedModelIndex] == "Bark")
                 {
-                    UiData.ModelList2 = BarkModels;
+                    UiData.SecondaryModelList = BarkModels;
                     SecondaryModelPicker.IsVisible = true;
                 }
                 else if (UiData.ModelList[UiData.SelectedModelIndex] == "CoquiTTS")
                 {
-                    UiData.ModelList2 = CoquiModels;
+                    UiData.SecondaryModelList = CoquiModels;
                     SecondaryModelPicker.IsVisible = true;
                 }
                 else if (UiData.ModelList[UiData.SelectedModelIndex] == "Piper")
                 {
-                    UiData.ModelList2 = PiperModels;
+                    UiData.SecondaryModelList = PiperModels;
                     SecondaryModelPicker.IsVisible = true;
                 }
                 else
                 {
                     SecondaryModelPicker.IsVisible = false;
                 }
+            }
+        }
+        private void OnSecondaryModelSelected(object? sender, EventArgs e)
+        {
+            if (UiData.SecondaryModelList.Count > 0 && UiData.SelectedModelIndex2 >= 0 && UiData.SelectedModelIndex2 < UiData.SecondaryModelList.Count)
+            {
+                UiData.SelectedModel2 = UiData.SecondaryModelList[UiData.SelectedModelIndex2];
+            }
+        }
+        private void OnTranscriptionModelSelected(object? sender, EventArgs e)
+        {
+            if (UiData.ModelList.Count > 0 && UiData.SelectedTranscriptionModelIndex >= 0 && UiData.SelectedTranscriptionModelIndex < UiData.ModelList.Count)
+            {
+                UiData.SelectedTranscriptionModel = UiData.ModelList[UiData.SelectedTranscriptionModelIndex];
+            }
+        }
+
+        private async void OnPageSizeChanged(object? sender, EventArgs e)
+        {
+            double aspectRatio = (double)Width / Height;
+            if (aspectRatio > (4.0 / 3.0))
+            {
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Horizontal");
+#endif
+                ModelPickers.Orientation = StackOrientation.Horizontal;
+            }
+            else
+            {
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Vertical");
+#endif
+                ModelPickers.Orientation = StackOrientation.Vertical;
+            }
+        }
+        private async void DeviceDisplay_MainDisplayInfoChanged(object? sender, DisplayInfoChangedEventArgs e)
+        {
+            var displayInfo = e.DisplayInfo;
+            MainView.MaximumHeightRequest = displayInfo.Height;
+            MainView.MaximumWidthRequest = displayInfo.Width;
+            if (displayInfo.Orientation == DisplayOrientation.Portrait)
+            {
+                ModelPickers.Orientation = StackOrientation.Vertical;
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Vertical");
+#endif
+            }
+            else if (displayInfo.Orientation == DisplayOrientation.Landscape)
+            {
+                ModelPickers.Orientation = StackOrientation.Horizontal;
+#if DEBUG
+                await MyMultiPlatformUtils.WriteToLog($"DisplayChanged Set Orientation: Horizontal");
+#endif
             }
         }
         private void TimeOutDelaySliderChanged(object sender, ValueChangedEventArgs e)
@@ -245,18 +391,24 @@ namespace LocalAiAssistant
             }
         }
         private async void OnSaveBtnClicked(object? sender, EventArgs e)
-    {
-        SemanticScreenReader.Announce(SaveBtn.Text);
-        if (UiData != null)
         {
-            await MyMultiPlatformUtils.WriteToPreferences(AudioGenerationSettings.TtsPreference, UiData);
-            await MyMultiPlatformUtils.MessageBoxWithOK(Microsoft.Maui.Controls.Application.Current!, "Save Settings", "Success");
+            SemanticScreenReader.Announce(SaveBtn.Text);
+            if (UiData != null)
+            {
+                await MyMultiPlatformUtils.WriteToPreferences(AudioGenerationSettings.ModelListPreference, UiData.ModelList);
+                await MyMultiPlatformUtils.WriteToPreferences(AudioGenerationSettings.SecondaryModelListPreference, UiData.SecondaryModelList);
+                UiData.ModelList = new();
+                UiData.SecondaryModelList = new();
+                await MyMultiPlatformUtils.WriteToPreferences(AudioGenerationSettings.TtsPreference, UiData);
+                OnLoadBtnClicked(this, new EventArgs());
+                await MyMultiPlatformUtils.MessageBoxWithOK(Microsoft.Maui.Controls.Application.Current!, "Save Settings", "Success");
+            }
         }
-    }
         private async void OnLoadBtnClicked(object? sender, EventArgs e)
         {
             SemanticScreenReader.Announce(LoadBtn.Text);
-            if (MyMultiPlatformUtils.CheckPreferenceContains(GeneralSettings.MainPreference))
+            
+                if (MyMultiPlatformUtils.CheckPreferenceContains(GeneralSettings.MainPreference))
             {
                 GeneralSettingsData? saveData = await MyMultiPlatformUtils.ReadFromPreferences<GeneralSettingsData>(GeneralSettings.MainPreference);
                 if (saveData != null)
@@ -267,6 +419,22 @@ namespace LocalAiAssistant
                     defaultData.EncryptEnabled = saveData.EncryptEnabled;
                     defaultData.EncryptKey = saveData.EncryptKey;
                     defaultData.DefaultTimeOutDelay = saveData.DefaultTimeOutDelay;
+                }
+            }
+            if (MyMultiPlatformUtils.CheckPreferenceContains(AudioGenerationSettings.ModelListPreference))
+            {
+                List<string> saveData = await MyMultiPlatformUtils.ReadFromPreferences<List<string>>(AudioGenerationSettings.ModelListPreference) ?? new();
+                if (saveData.Count > 0)
+                {
+                    UiData.ModelList = saveData;
+                }
+            }
+            if (MyMultiPlatformUtils.CheckPreferenceContains(AudioGenerationSettings.SecondaryModelListPreference))
+            {
+                List<string> saveData = await MyMultiPlatformUtils.ReadFromPreferences<List<string>>(AudioGenerationSettings.SecondaryModelListPreference) ?? new();
+                if (saveData.Count > 0)
+                {
+                    UiData.SecondaryModelList = saveData;
                 }
             }
             if (MyMultiPlatformUtils.CheckPreferenceContains(AudioGenerationSettings.TtsPreference))
@@ -291,17 +459,22 @@ namespace LocalAiAssistant
                     UiData.TTSEnabled = saveData.TTSEnabled;
                     UiData.Speed = saveData.Speed;
                     UiData.SelectedModel = saveData.SelectedModel;
-                    UiData.ModelList = saveData.ModelList;
-                    UiData.SelectedModelIndex = saveData.SelectedModelIndex;
+                    UiData.SelectedModelIndex = UiData.ModelList.IndexOf(saveData.SelectedModel);
                     if (UiData.ModelList.Count > 1 && UiData.SelectedModelIndex > 0 && UiData.SelectedModelIndex < UiData.ModelList.Count)
                     {
-                        UiData.SelectedModel = saveData.ModelList[saveData.SelectedModelIndex];
+                        UiData.SelectedModel = UiData.ModelList[UiData.SelectedModelIndex];
                     }
-                    UiData.ModelList2 = saveData.ModelList2;
-                    UiData.SelectedModelIndex2 = saveData.SelectedModelIndex2;
-                    if (UiData.ModelList2.Count > 0 && UiData.SelectedModelIndex2 >= 0 && UiData.SelectedModelIndex2 < UiData.ModelList2.Count)
+                    UiData.SelectedModel2 = saveData.SelectedModel2;
+                    UiData.SelectedModelIndex2 = UiData.SecondaryModelList.IndexOf(saveData.SelectedModel2);
+                    if (UiData.SecondaryModelList.Count > 0 && UiData.SelectedModelIndex2 >= 0 && UiData.SelectedModelIndex2 < UiData.SecondaryModelList.Count)
                     {
-                        UiData.SelectedModel2 = saveData.ModelList2[saveData.SelectedModelIndex2];
+                        UiData.SelectedModel2 = UiData.SecondaryModelList[UiData.SelectedModelIndex2];
+                    }
+                    UiData.SelectedTranscriptionModel = saveData.SelectedTranscriptionModel;
+                    UiData.SelectedTranscriptionModelIndex = UiData.ModelList.IndexOf(UiData.SelectedTranscriptionModel);
+                    if (UiData.ModelList.Count > 1 && UiData.SelectedTranscriptionModelIndex > 0 && UiData.SelectedTranscriptionModelIndex < UiData.ModelList.Count)
+                    {
+                        UiData.SelectedTranscriptionModel = UiData.ModelList[UiData.SelectedTranscriptionModelIndex];
                     }
                     if (UiData.ServerModeNames.Count > 1 && saveData.SelectedServerModeIndex < UiData.ServerModeNames.Count)
                     {
@@ -415,14 +588,20 @@ namespace LocalAiAssistant
         public static readonly BindableProperty SelectedModelProperty = BindableProperty.Create(nameof(SelectedModel), typeof(string), typeof(AudioGenerationSettingsData), "deliberate_v3");
         public string SelectedModel { get => (string)GetValue(SelectedModelProperty); set => SetValue(SelectedModelProperty, value); }
 
-        public static readonly BindableProperty modelList2Property = BindableProperty.Create(nameof(ModelList2), typeof(List<string>), typeof(AudioGenerationSettingsData), new List<string>());
-        public List<string> ModelList2 { get => (List<string>)GetValue(modelList2Property); set => SetValue(modelList2Property, value); }
+        public static readonly BindableProperty SecondaryModelListProperty = BindableProperty.Create(nameof(SecondaryModelList), typeof(List<string>), typeof(AudioGenerationSettingsData), new List<string>());
+        public List<string> SecondaryModelList { get => (List<string>)GetValue(SecondaryModelListProperty); set => SetValue(SecondaryModelListProperty, value); }
 
         public static readonly BindableProperty SelectedModelIndex2Property = BindableProperty.Create(nameof(SelectedModelIndex2), typeof(int), typeof(AudioGenerationSettingsData), int.MinValue);
         public int SelectedModelIndex2 { get => (int)GetValue(SelectedModelIndex2Property); set => SetValue(SelectedModelIndex2Property, value); }
 
         public static readonly BindableProperty SelectedModel2Property = BindableProperty.Create(nameof(SelectedModel2), typeof(string), typeof(AudioGenerationSettingsData), "deliberate_v3");
         public string SelectedModel2 { get => (string)GetValue(SelectedModel2Property); set => SetValue(SelectedModel2Property, value); }
+
+        public static readonly BindableProperty SelectedTranscriptionModelIndexProperty = BindableProperty.Create(nameof(SelectedTranscriptionModelIndex), typeof(int), typeof(AudioGenerationSettingsData), int.MinValue);
+        public int SelectedTranscriptionModelIndex { get => (int)GetValue(SelectedTranscriptionModelIndexProperty); set => SetValue(SelectedTranscriptionModelIndexProperty, value); }
+
+        public static readonly BindableProperty SelectedTranscriptionModelProperty = BindableProperty.Create(nameof(SelectedTranscriptionModel), typeof(string), typeof(AudioGenerationSettingsData), "deliberate_v3");
+        public string SelectedTranscriptionModel { get => (string)GetValue(SelectedTranscriptionModelProperty); set => SetValue(SelectedTranscriptionModelProperty, value); }
 
         public static readonly BindableProperty SpeedProperty = BindableProperty.Create(nameof(Speed), typeof(double), typeof(AudioGenerationSettingsData), 1.0);
         public double Speed { get => (double)GetValue(SpeedProperty); set => SetValue(SpeedProperty, value); }

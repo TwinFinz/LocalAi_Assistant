@@ -3,9 +3,9 @@ using LocalAiAssistant.Utilities;
 
 namespace LocalAiAssistant;
 
-public partial class AudioGeneration : ContentPage
+public partial class TranscriptionGeneration : ContentPage
 {
-	public AudioGeneration()
+	public TranscriptionGeneration()
 	{
 		InitializeComponent();
         BindingContext = UiData;
@@ -87,7 +87,7 @@ public partial class AudioGeneration : ContentPage
                 UiData.SelectedTranscriptionModelIndex = UiData.ModelList.IndexOf(UiData.SelectedTranscriptionModel);
                 if (UiData.ModelList.Count > 1 && UiData.SelectedTranscriptionModelIndex > 0 && UiData.SelectedTranscriptionModelIndex < UiData.ModelList.Count)
                 {
-                    UiData.SelectedTranscriptionModel = UiData.ModelList[UiData.SelectedTranscriptionModelIndex];
+                    UiData.SelectedModel = UiData.ModelList[UiData.SelectedTranscriptionModelIndex];
                 }
                 if (UiData.ServerModeNames.Count > 1 && saveData.SelectedServerModeIndex < UiData.ServerModeNames.Count)
                 {
@@ -127,16 +127,7 @@ public partial class AudioGeneration : ContentPage
             Grid.SetColumn(SettingsPanel, 0);
         }
     }
-    private async void OnUserInputCompleted(object sender, EventArgs e)
-    {
-        SemanticScreenReader.Announce("Input Complete");
-        string userInput = UiData.Prompt;
-        UiData.Prompt = "";
-        await Generate(userInput);
-#if DEBUG
-        await MyMultiPlatformUtils.WriteToLog($"Processed Audio Generation: {userInput}");
-#endif
-    }
+
     private void SpeedSliderChanged(object sender, ValueChangedEventArgs e)
     {
         double roundedValue = (double)Math.Round(e.NewValue * 20) / 20;
@@ -192,19 +183,6 @@ public partial class AudioGeneration : ContentPage
     }
     public async Task Generate(string textToGenerate = "", CancellationToken cancellationToken = default)
     {
-        curAudioBytes = await GenerateTtsAudio(textToGenerate, cancellationToken);
-        if (curAudioBytes != null)
-        {
-            string filePath = Path.Combine(FileSystem.CacheDirectory, "temp_audio.mp3");
-            await File.WriteAllBytesAsync(filePath, curAudioBytes, cancellationToken); // Asynchronous file write
-            MediaSource source = MediaSource.FromFile(filePath);
-            MediaPlayer.Source = source;
-            MediaOutput.IsVisible = false;
-            MediaPlayer.ShouldAutoPlay = true;
-        }
-    }
-    public async Task<byte[]?> GenerateTtsAudio(string textToGenerate = "", CancellationToken cancellationToken = default)
-    {
         try
         {
             if (UiData.ModelList.Count <= 0)
@@ -218,7 +196,7 @@ public partial class AudioGeneration : ContentPage
             if (string.IsNullOrWhiteSpace(textToGenerate))
             {
                 await MyMultiPlatformUtils.MessageBoxWithOK(Microsoft.Maui.Controls.Application.Current!, "Warning!", "To generate TTS you must provide a prompt.");
-                return null;
+                return;
             }
             byte[] audioBytes = Array.Empty<byte>();
             switch (UiData.ServerMode)
@@ -231,19 +209,8 @@ public partial class AudioGeneration : ContentPage
                     }
                 case AudioGenerationSettingsData.ServerModes.LocalAi:
                     {
-                        // LocalAI Text2Audio
-                        if (UiData.SelectedModel == "Bark")
-                        {
-                            audioBytes = await MyAIAPI.GenerateLocalAiTTS(prompt: textToGenerate, apiKey: UiData.ApiKey, backend: "bark", model: UiData.SelectedModel2, timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled, cancellationToken: cancellationToken);
-                        }
-                        else if (UiData.SelectedModel == "CoquiTTS")
-                        {
-                            audioBytes = await MyAIAPI.GenerateLocalAiTTS(prompt: textToGenerate, apiKey: UiData.ApiKey, backend: "coqui", model: UiData.SelectedModel2, timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled, cancellationToken: cancellationToken);
-                        }
-                        else
-                        {
-                            audioBytes = await MyAIAPI.GenerateLocalAiTTS(prompt: textToGenerate, apiKey: UiData.ApiKey, model: UiData.SelectedModel, timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled, cancellationToken: cancellationToken);
-                        }
+                        // LocalAI Audio2Text
+                        audioBytes = await MyAIAPI.GenerateLocalAiTTS(prompt: textToGenerate, apiKey: UiData.ApiKey, model: UiData.SelectedModel, timeoutInSeconds: (int)UiData.TimeOutDelay, serverUrl: UiData.ServerUrlInput, authEnabled: UiData.AuthEnabled, cancellationToken: cancellationToken);
                         if (audioBytes != Array.Empty<byte>() && audioBytes != null)
                         {
                             curAudioBytes = audioBytes;
@@ -259,14 +226,14 @@ public partial class AudioGeneration : ContentPage
                         }
                         break;
                     }
-            }
+            } // Process Appropriately
 
-            return curAudioBytes;
+            return;
         }
         catch (Exception ex)
         {
             await MyMultiPlatformUtils.MessageBoxWithOK(Microsoft.Maui.Controls.Application.Current!, "Error", $"Failed to generate Audio: {ex.Message}");
-            return null;
+            return;
         }
     }
     #endregion

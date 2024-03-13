@@ -44,7 +44,7 @@ namespace LocalAiAssistant
          "worst face, three crus, extra crus, fused crus, worst feet, three feet, fused feet, fused thigh, three thigh, fused thigh, extra thigh, worst thigh," +
          "missing fingers, extra fingers, ugly fingers, long fingers, horn, realistic photo, extra eyes, huge eyes, 2girl, amputation, disconnected limbs";
 
-        internal static string defaultShortNegativePrompt = "nsfw, nude, naked, 2girl, amputation, disconnected limbs";
+        internal static string defaultShortNegativePrompt = "worst face, missing legs, missing arms, duplicate, ugly";
         /*
         private readonly string samplersEndpoint = "/sdapi/v1/samplers";
         private readonly string optionsEndpoint = "/sdapi/v1/options";
@@ -1627,7 +1627,7 @@ namespace LocalAiAssistant
                 throw new Exception($"Error retrieving file contents: {ex.Message}");
             }
         }
-        public static async Task DeleteFileAsync(string fileId, string serverUrl = "https://api.openai.com/v1", string apiKey = "sk-xxx", int timeoutInSeconds = 60, bool authEnabled = true)
+        public static async Task DeleteFileAsync(string fileId , string serverUrl = "https://api.openai.com/v1", string apiKey = "sk-xxx", int timeoutInSeconds = 60, bool authEnabled = true)
         {
             try
             {
