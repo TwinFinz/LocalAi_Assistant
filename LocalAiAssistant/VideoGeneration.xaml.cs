@@ -127,7 +127,7 @@ public partial class VideoGeneration : ContentPage
                 UiData.SelectedTxt2VideoModelIndex = saveData.SelectedTxt2VideoModelIndex;
                 if (UiData.ModelList.Count > 1 && UiData.SelectedTxt2VideoModelIndex > 0 && UiData.SelectedTxt2VideoModelIndex < UiData.ModelList.Count)
                 {
-                    UiData.SelectedImg2ImgModel = saveData.ModelList[saveData.SelectedTxt2VideoModelIndex];
+                    UiData.SelectedTxt2VideoModel = saveData.ModelList[saveData.SelectedTxt2VideoModelIndex];
                 }
                 UiData.SelectedImg2VideoModelIndex = saveData.SelectedImg2VideoModelIndex;
                 if (UiData.ModelList.Count > 1 && UiData.SelectedImg2VideoModelIndex > 0 && UiData.SelectedImg2VideoModelIndex < UiData.ModelList.Count)

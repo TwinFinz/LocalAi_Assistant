@@ -38,7 +38,7 @@ namespace LocalAiAssistant
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
         #region StableDiffusion
-        internal static string defaultNegativePrompt = "nsfw, nude, naked, face, worst quality, normal quality, low quality, low res, blurry, text, watermark," +
+        internal static string defaultNegativePrompt = "face, worst quality, normal quality, low quality, low res, blurry, text, watermark," +
          "logo, banner, extra digits, cropped, jpeg artifacts, signature, username, error, sketch, duplicate, ugly, monochrome, horror, geometry, mutation," +
          "disgusting, bad anatomy, bad hands, three hands, three legs, bad arms, missing legs, missing arms, poorly drawn face, bad face, fused face, cloned face," +
          "worst face, three crus, extra crus, fused crus, worst feet, three feet, fused feet, fused thigh, three thigh, fused thigh, extra thigh, worst thigh," +
@@ -673,6 +673,7 @@ namespace LocalAiAssistant
         private static readonly string ModerationsEndpoint = "/moderations";
         private static readonly string imageEditsEndpoint = "/images/edits";
         private static readonly string filesEndpoint = "/files";
+        private static readonly string fineTuningEndpoint = "/fine_tuning/jobs";
         #endregion
         readonly List<string> exampleTexts = new()
         {
@@ -2528,6 +2529,135 @@ namespace LocalAiAssistant
             {
             }
         }
+
+        public class FineTuningRequest
+        {
+            [JsonPropertyName("model")]
+            public string Model { get; set; } = string.Empty;
+
+            [JsonPropertyName("training_file")]
+            public string TrainingFile { get; set; } = string.Empty;
+        }
+        public class FineTuningRequestFull : FineTuningRequest
+        {
+            [JsonPropertyName("hyperparameters")]
+            public Hyperparameters Hyperparameters { get; set; } = new Hyperparameters();
+
+            [JsonPropertyName("suffix")]
+            public string? Suffix { get; set; } = null;
+
+            [JsonPropertyName("validation_file")]
+            public string? ValidationFile { get; set; } = null;
+        }
+        public class Hyperparameters
+        {
+            [JsonPropertyName("batch_size")]
+            public int BatchSize { get; set; } = int.MinValue;
+
+            [JsonPropertyName("learning_rate_multiplier")]
+            public int LearningRateMultiplier { get; set; } = int.MinValue;
+
+            [JsonPropertyName("n_epochs")]
+            public int NEpochs { get; set; } = int.MinValue;
+
+
+        }
+        public class FineTuningJobResponse
+        {
+            [JsonPropertyName("object")]
+            public string Object { get; set; } = string.Empty;
+
+            [JsonPropertyName("id")]
+            public string Id { get; set; } = string.Empty;
+
+            [JsonPropertyName("model")]
+            public string Model { get; set; } = string.Empty;
+
+            [JsonPropertyName("created_at")]
+            public long CreatedAt { get; set; } = long.MinValue;
+
+            [JsonPropertyName("fine_tuned_model")]
+            public string? FineTunedModel { get; set; } = null;
+
+            [JsonPropertyName("organization_id")]
+            public string OrganizationId { get; set; } = string.Empty;
+
+            [JsonPropertyName("result_files")]
+            public List<string> ResultFiles { get; set; } = new List<string>();
+
+            [JsonPropertyName("status")]
+            public string Status { get; set; } = string.Empty;
+
+            [JsonPropertyName("validation_file")]
+            public string? ValidationFile { get; set; } = null;
+
+            [JsonPropertyName("training_file")]
+            public string TrainingFile { get; set; } = string.Empty;
+        }
+        public class FineTuningJobResponseWithError
+        {
+            [JsonPropertyName("object")]
+            public string Object { get; set; } = "fine_tuning.job";
+
+            [JsonPropertyName("id")]
+            public string Id { get; set; } = string.Empty;
+
+            [JsonPropertyName("created_at")]
+            public long CreatedAt { get; set; } = long.MinValue;
+
+            [JsonPropertyName("error")]
+            public ErrorDetails? Error { get; set; }
+
+            [JsonPropertyName("fine_tuned_model")]
+            public string? FineTunedModel { get; set; }
+
+            [JsonPropertyName("organization_id")]
+            public string OrganizationId { get; set; } = string.Empty;
+
+            [JsonPropertyName("result_files")]
+            public List<string> ResultFiles { get; set; } = new List<string>();
+
+            [JsonPropertyName("status")]
+            public string Status { get; set; } = string.Empty;
+
+            [JsonPropertyName("trained_tokens")]
+            public int? TrainedTokens { get; set; }
+
+            [JsonPropertyName("training_file")]
+            public string TrainingFile { get; set; } = string.Empty;
+
+            [JsonPropertyName("validation_file")]
+            public string? ValidationFile { get; set; }
+
+            public class ErrorDetails
+            {
+                [JsonPropertyName("code")]
+                public string Code { get; set; } = string.Empty;
+
+                [JsonPropertyName("message")]
+                public string Message { get; set; } = string.Empty;
+
+                [JsonPropertyName("param")]
+                public string? Parameter { get; set; }
+            }
+        }
+        public class FineTuningEvent
+        {
+            [JsonPropertyName("id")]
+            public string ID { get; set; } = string.Empty;
+
+            [JsonPropertyName("created_at")]
+            public int CreatedAt { get; set; } = int.MinValue;
+
+            [JsonPropertyName("level")]
+            public string Level { get; set; } = string.Empty;
+
+            [JsonPropertyName("message")]
+            public string Message { get; set; } = string.Empty;
+
+            [JsonPropertyName("object")]
+            public string Object { get; set; } = string.Empty;
+        }
         #endregion
         #endregion
         #region LocalAi
@@ -2828,7 +2958,7 @@ namespace LocalAiAssistant
             public string Model { get; set; } = "stablediffusionaccelerated";
 
             [JsonPropertyName("scheduler_type")]
-            public string SchedulerType { get; set; } = "euler_a"; // "url"
+            public string SchedulerType { get; set; } = "euler_a";
 
             [JsonPropertyName("cfg_scale")]
             public int CfgScale { get; set; } = 12;
